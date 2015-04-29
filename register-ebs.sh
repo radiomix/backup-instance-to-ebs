@@ -146,7 +146,7 @@ log_output
 
 ec2_api_version=$(sudo -E $EC2_HOME/bin/ec2-version)
 input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-version)
-ec2_ami_version=${input:16:0}
+ec2_ami_version=${input::16}
 log_msg="***
 *** Using partition:$partition
 *** Using virtual_type:$virtual_type
