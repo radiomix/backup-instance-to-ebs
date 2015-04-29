@@ -121,10 +121,11 @@ log_output
 #######################################
 ## check EBS Volume
 set +euf
-input=$(lsblk | grep aws_ebs_device)
+ebs_name=$(echo $aws_ebs_device | cut -d '/' -f 3)
+input=$(lsblk | grep $ebs_name) 
 set +euf
-if [[ "$inpu" == "" ]]; then
-  log_msg=" ERROR: No volume attached to device $aws_ebs_device !! "
+if [[ "$input" == "" ]]; then
+  log_msg=" ERROR: No volume attached to device $aws_ebs_device "
   log_output
   exit -12
 fi
@@ -144,7 +145,7 @@ log_msg="
 log_output
 
 ec2_api_version=$(sudo -E $EC2_HOME/bin/ec2-version)
-input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-versio)
+input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-version)
 ec2_ami_version=${input:16:0}
 log_msg="***
 *** Using partition:$partition
