@@ -28,8 +28,8 @@
 cwd=$(pwd)
 
 ## read functions and config
-source functions.sh
-source config.sh
+source $(dirname $0)/functions.sh
+source $(dirname $0)/config.sh
 
 start_logging
 
