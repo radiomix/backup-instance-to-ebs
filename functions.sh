@@ -49,7 +49,7 @@ done
 ######################################
 ## x509-pd/cert file path.
 set_aws_x509_path(){
-echo " We expect the certificate in \"$aws_cert_directory/\""
+echo " We expect the certificate in \"$aws_cert_directory\""
 if [ -d $aws_cert_directory ]; then 
   echo "Found these files in $aws_cert_directory "
   ls $aws_cert_directory
@@ -141,7 +141,7 @@ start_logging(){
   base=$(basename $0)
   caller=${base::-3}
   log_file=$bundle_dir$caller"-"$date_fmt.log
-  echo "Logging to file $log_file" && sleep 3
+  echo "Logging to file $log_file" && sleep 2
   sudo touch $log_file
   sudo chown $(whoami) $log_file
   date >> $log_file
