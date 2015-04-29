@@ -95,8 +95,11 @@ echo  "If first entry differs from BOOT COMMAND LINE PARAMETER, please edit /boo
 echo -n "Do you want to edit /boot/grub/menu.list to reflect command line? [y|N]:"
 read edit
 if  [[ "$edit" == "y" ]]; then
-    echo "*** Editing /boot/grub/menu.lst" >> $log_file
+    cat /boot/grub/menu.lst | sudo tee -a $log_file
+    log_msg=" Editing /boot/grub/menu.lst"
+    log_output
     sudo vi /boot/grub/menu.lst
+    cat /boot/grub/menu.lst | sudo tee -a $log_file
 fi
 
 #######################################
@@ -107,12 +110,15 @@ efi=$(grep -i efi /etc/fstab)
 if [[ "$efi" != "" ]]; then
   echo "Please delete these UEFI/EFI partition entries \"$efi\" in /etc/fstab"
   sleep 4
+  cat /etc/fstab |sudo  tee -a $log_file # cat old /etc/fstab to log file
   log_msg=" Editing /etc/fstab"
+  log_output
   sudo vi /etc/fstab
+  cat /etc/fstab |sudo  tee -a $log_file # cat old /etc/fstab to log file
 else
   log_msg=" Non UEFI/EFI partiton entries found in /etc/fstab."
+  log_output
 fi
-log_output
 
 #######################################
 log_msg=" You can now run ./register-ebs.sh to copy $current_instance_id into an EBS AMI.
@@ -120,3 +126,4 @@ log_msg=" You can now run ./register-ebs.sh to copy $current_instance_id into an
 log_output
 log_msg=$(date)
 log_output
+echo "Logfile of this run: $log_file "
