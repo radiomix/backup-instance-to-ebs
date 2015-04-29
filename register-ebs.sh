@@ -30,6 +30,8 @@ cwd=$(pwd)
 ## read functions and config
 source $(dirname $0)/functions.sh
 source $(dirname $0)/config.sh
+set -euf
+set -o pipefail
 
 start_logging
 
