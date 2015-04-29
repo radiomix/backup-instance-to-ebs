@@ -1,0 +1,122 @@
+#!/bin/bash
+# Prepare an AMI with the AWS API/AMI tools
+#   http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/set-up-ec2-cli-linux.html
+#   http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/set-up-ami-tools.html
+#  Prerequisites:
+#   - we check for ruby, unzip, wget, openssl 
+#            and default-jre (for command ec2-register (CLI Tools need JAVA), thus we check for an installed version
+#   - install kpart,gdisk,  grub legacy v 0.97
+#   - check on root device for /boot/grub/menu.lst and boot command line parameter
+#   - check for efi/uefi entries in /etc/fstab
+#       http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/set-up-ec2-cli-linux.html
+#
+#######################################
+## config variables
+
+## read functions and config
+source functions.sh
+source config.sh
+
+start_logging
+
+## check config var $command_list or exit
+check_commands
+
+######################################
+## install api/ami tools under /usr/local/ec2
+echo "*** Installing AWS TOOLS"
+ec2_prefix="/usr/local/ec2/"
+sudo mkdir $ec2_prefix
+sudo rm -rf $ec2_prefix/*
+rm -f ec2-ami-tools.zip ec2-api-tools.zip
+
+wget http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
+wget http://s3.amazonaws.com/ec2-downloads/ec2-ami-tools.zip
+sudo unzip -q ec2-api-tools.zip -d /usr/local/ec2/
+sudo unzip -q ec2-ami-tools.zip  -d /usr/local/ec2/
+
+######################################
+# set java path used by ec-tools
+echo "*** SETTING JAVA PATH"
+java_bin=$(which java)
+java_path=$(readlink -f $java_bin)
+echo $java_bin  $java_path
+java_home=${java_path/'/bin/java'/''}
+### set java home path
+JAVA_HOME=$java_home
+echo "*** JAVA_HOME set to  \"$java_home\"" 
+$JAVA_HOME/bin/java -version
+
+
+######################################
+## prepare bundling
+
+## packages needed anyways
+log_msg=" Installing packages 'gdisk kpartx'"
+log_output
+sudo apt-get update
+sudo apt-get install -y --force-yes gdisk kpartx.
+
+#######################################
+## check grub version, we need grub legacy
+log_msg=" Installing grub verions 0.9x"
+log_output
+sudo grub-install --version
+sudo apt-get install -y grub
+grub_version=$(grub --version)
+log_msg="Grub version:$grub_version."
+log_output
+
+#######################################
+## find root device to check grub version
+log_msg=" Checking root device"
+log_output
+
+mount | grep sda
+lsblk  #not on all distros available
+### read the root device
+echo -n "Enter the root device: /dev/"
+read _device
+root_device="/dev/$_device"
+sudo file -s $root_device | grep "part /$"
+
+#######################################
+### show boot cmdline parameter and adjust /boot/grub/menu.lst
+echo "*** Checking for boot parameters"
+echo ""
+echo "*** Next line holds BOOT COMMAND LINE PARAMETERS:"
+cat /proc/cmdline
+cat /proc/cmdline >> $log_file
+echo "*** Next line holds KERNEL PARAMETERS in /boot/grub/menu.lst:"
+grep ^kernel /boot/grub/menu.lst
+grep ^kernel /boot/grub/menu.lst >> $log_file
+echo
+echo  "If first entry differs from BOOT COMMAND LINE PARAMETER, please edit /boot/grub/menu.list "
+echo -n "Do you want to edit /boot/grub/menu.list to reflect command line? [y|N]:"
+read edit
+if  [[ "$edit" == "y" ]]; then
+    echo "*** Editing /boot/grub/menu.lst" >> $log_file
+    sudo vi /boot/grub/menu.lst
+fi
+
+#######################################
+### remove evi entries in /etc/fstab if exist
+log_msg=" Checking for efi/uefi partitions in /etc/fstab"
+log_output
+efi=$(grep -i efi /etc/fstab)
+if [[ "$efi" != "" ]]; then
+  echo "Please delete these UEFI/EFI partition entries \"$efi\" in /etc/fstab"
+  sleep 4
+  log_msg=" Editing /etc/fstab"
+  sudo vi /etc/fstab
+else
+  log_msg=" Non UEFI/EFI partiton entries found in /etc/fstab."
+fi
+log_output
+
+#######################################
+log_msg=" You can now run ./register-ebs.sh to copy $current_instance_id into an EBS AMI.
+*** FINISHED TO PREPARE AMI $currend_instance_id"
+log_output
+log_msg=$(date)
+log_output
