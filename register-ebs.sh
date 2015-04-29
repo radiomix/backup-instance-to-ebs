@@ -76,7 +76,7 @@ aws_secret_key=$AWS_SECRET_KEY
 # region
 aws_region=$AWS_REGION
 if [[ "$aws_region" == "" ]]; then
-  log_msg"*** ERROR: No AWS_REGION given!! "
+  log_msg="*** ERROR: No AWS_REGION given!! "
   log_output
   exit -2
 fi
@@ -85,7 +85,7 @@ echo "*** Using region:$aws_region"
 # architecture
 aws_architecture=$AWS_ARCHITECTURE
 if [[ "$aws_architecture" == "" ]]; then
-  log_msg"*** ERROR: No AWS_ARCHITECTURE given!! "
+  log_msg="*** ERROR: No AWS_ARCHITECTURE given!! "
   log_output
   exit -3
 fi
@@ -179,7 +179,6 @@ log_msg=" Bundleing AMI, this may take several minutes "
 log_output
 log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $AWS_PK_PATH -c $AWS_CERT_PATH -u $AWS_ACCOUNT_ID -r x86_64 -e /tmp/cert/ -d $bundle_dir -p $prefix  $blockDevice $partition --no-filter --batch"
 log_output
-$log_msg
 sleep 2
 
 ## start services
@@ -216,7 +215,7 @@ log_output
 ## extract image name and copy image to EBS volume
 image=${manifest/.manifest.xml/""}
 size=$(du -sb $bundle_dir/$image | cut -f 1)
-log_msg" Copying $bundle_dir/$image of size $size to $aws_ebs_device.
+log_msg=" Copying $bundle_dir/$image of size $size to $aws_ebs_device.
 ***  This may take several minutes!"
 log_output
 #sudo dd if=$bundle_dir/$image of=$aws_ebs_device bs=1M
