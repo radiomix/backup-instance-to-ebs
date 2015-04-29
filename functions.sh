@@ -16,14 +16,17 @@ log_output(){
 ######################################
 ## checks config var $aws_credentials
 check_aws_credentials(){
+#declare credentials
 for credential in ${aws_credentials}; do
+set +euf
   val=$(env | grep $credential| cut -d '=' -f 2)
+set +euf
   if [[ "$val" == "" ]]; then
     log_msg=" ERROR Variable $credential not set! EXIT!"
     log_output
     exit -30
   else
-    log_msg=" Variable $credential OK"
+    log_msg=" Variable $credential set!"
     log_output
   fi
 done
@@ -38,8 +41,8 @@ set_aws_credentials(){
 for credential in ${aws_credentials}; do
   echo -n "Enter your $credential:"
   read val
-  #eval "export $credential=\"$val\""
-  eval "$credential=\"$val\""
+  eval "export $credential=\"$val\""
+  #eval "$credential=\"$val\""
 done
 }
 
@@ -60,8 +63,8 @@ if [[ "$AWS_CERT_PATH" == "" ]]; then
     log_output
     exit -20
   fi
-  #export AWS_CERT_PATH=$input
-  AWS_CERT_PATH=$input
+  export AWS_CERT_PATH=$input
+  #AWS_CERT_PATH=$input
 fi
 
 if [[ "$AWS_PK_PATH" == "" ]]; then
@@ -72,8 +75,8 @@ if [[ "$AWS_PK_PATH" == "" ]]; then
     echo "$error_msg"
     exit
   fi
-  #export AWS_PK_PATH=$input
-  AWS_PK_PATH=$input
+  export AWS_PK_PATH=$input
+  #AWS_PK_PATH=$input
 fi
 
 }
@@ -180,7 +183,7 @@ check_ec2_tools(){
   sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-version
 
   log_msg=" EC2_HOME installed to \"$api_tool\"
-  *** EC2_AMITOOL_HOME installed to \"$ami_tool\""
+*** EC2_AMITOOL_HOME installed to \"$ami_tool\""
   log_output
 return
 }
