@@ -153,6 +153,7 @@ log_msg="***
 *** Using block_device:$blockDevice
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
+*** Using :$bundle_dir to bundled this machine 
 *** Using device:$aws_ebs_device to copy the unbundled image to
 *** Using mount point:$aws_ebs_mount_point to mount the unbundled image
 *** Logging into file: \"$log_file\""
@@ -181,8 +182,8 @@ log_output
 sleep 2
 
 ## start services
-start_stop_command=start
-start_stop_service
+#start_stop_command=start
+#start_stop_service
 
 export AWS_MANIFEST=$prefix.manifest.xml
 
