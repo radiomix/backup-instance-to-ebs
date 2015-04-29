@@ -73,25 +73,6 @@ aws_access_key=$AWS_ACCESS_KEY
 # secrete key from env variable, needed for authentification
 aws_secret_key=$AWS_SECRET_KEY
 
-# region
-aws_region=$AWS_REGION
-if [[ "$aws_region" == "" ]]; then
-  log_msg="*** ERROR: No AWS_REGION given!! "
-  log_output
-  exit -2
-fi
-echo "*** Using region:$aws_region"
-
-# architecture
-aws_architecture=$AWS_ARCHITECTURE
-if [[ "$aws_architecture" == "" ]]; then
-  log_msg="*** ERROR: No AWS_ARCHITECTURE given!! "
-  log_output
-  exit -3
-fi
-echo "*** Using architecture:$aws_architecture"
-
-
 # descriptions
 aws_snapshot_description="$project AMI: "$current_instance_id", Snapshot to register new EBS AMI"
 
