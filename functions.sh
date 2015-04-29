@@ -182,8 +182,8 @@ check_ec2_tools(){
   sudo -E $EC2_HOME/bin/ec2-version
   sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-version
 
-  log_msg=" EC2_HOME installed to \"$api_tool\"
-*** EC2_AMITOOL_HOME installed to \"$ami_tool\""
+  log_msg=" EC2_HOME installed to \"$EC2_HOME\"
+*** EC2_AMITOOL_HOME installed to \"$EC2_AMITOOL_HOME\""
   log_output
 return
 }
