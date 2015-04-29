@@ -163,7 +163,7 @@ start=$SECONDS
 #################################################################################
 echo -n "Do you want to bundle with these parameters?[y|N]"
 read input
-if [[ "$input" == "y" ]]; then
+if [[ "$input" != "y" ]]; then
   log_msg=" Aborting bundle proccess due to user input. EXIT"
   log_output
   exit -999
