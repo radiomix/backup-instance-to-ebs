@@ -143,13 +143,15 @@ if [[ $result != yes ]]; then
 fi
 
 #######################################
-ec2_version=$(sudo -E $EC2_HOME/bin/ec2-version)
+ec2_api_version=$(sudo -E $EC2_HOME/bin/ec2-version)
+input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-versio)
+ec2_ami_version=${input:16:0}
 log_msg="***
-*** Using partition:$partition 
+*** Using partition:$partition
 *** Using virtual_type:$virtual_type
 *** Using block_device:$blockDevice
-*** Using EC2 version:$ec2_version"
-## write output to log file
+*** Using EC2 API version:$ec2_api_version
+*** Using EC2 AMI TOOL version:$ec2_ami_version"
 log_output
 sleep 3
 start=$SECONDS
