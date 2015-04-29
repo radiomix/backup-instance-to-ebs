@@ -43,29 +43,27 @@ setup_i386() {
 }
 
 # region
-aws_region
 if [[ "$aws_region" == "" ]]; then
    echo " ERROR: No AWS_REGION given!! "
    return -2
 fi
-echo "*** Using region: $AWS_REGION"
+echo "*** Using region: $aws_region"
 
 # architecture
-aws_architecture
 if [[ "$aws_architecture" == "" ]]; then
     echo " ERROR: No AWS_ARCHITECTURE given!! "
     return -3
 fi
-echo "*** Using architecture: $AWS_ARCHITECTURE"
+echo "*** Using architecture: $aws_architecture"
 
 aws_kernel=""
 declare -A kernels
-if [[ "$AWS_ARCHITECTURE" == "x86_64" ]]; then
+if [[ "$aws_architecture" == "x86_64" ]]; then
   setup_x86_64
 else
   setup_i386
 fi
-aws_kernel=${kernels[$AWS_REGION]}
+aws_kernel=${kernels[$aws_region]}
 export AWS_KERNEL=$aws_kernel
-echo "*** Using kernel:$AWS_KERNEL in region:$AWS_REGION for architecture:$AWS_ARCHITECTURE"
+echo "*** Using kernel:$aws_kernel in region:$aws_region for architecture:$aws_architecture"
 
