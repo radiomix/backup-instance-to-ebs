@@ -117,6 +117,35 @@ else
   log_output
 fi
 
+
+#######################################
+## check if mount point exists
+if [[ ! -d $aws_ebs_mount_point ]]; then
+  sudo mkdir $aws_ebs_mount_point
+fi
+result=$(sudo test -w $aws_ebs_mount_point && echo yes)
+if [[ $result != yes ]]; then
+  log_msg=" ERROR: directory $aws_ebs_mount_point to mount the image is not writable!! "
+  log_output
+   exit -12
+fi
+log_msg=" Checking EBS mount point $aws_ebs_mount_point OK"
+log_output
+
+#######################################
+## check EBS Volume
+set +euf
+input=$(lsblk | grep aws_ebs_device)
+set +euf
+if [[ "$inpu" == "" ]]; then
+  log_msg=" ERROR: No volume attached to device $aws_ebs_device !! "
+  log_output
+  exit -12
+fi
+log_msg=" Checking EBS volume $aws_ebs_device OK
+*** $input"
+log_output
+
 #######################################
 log_msg=" 
 *** You can now run ./register-ebs.sh to copy $current_instance_id into an EBS AMI.
