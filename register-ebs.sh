@@ -47,17 +47,6 @@ set_aws_credentials
 check_aws_credentials
 set_aws_x509_path
 
-log_msg="
-***
-*** Using AWS_ACCESS_KEY:   \"$aws_access_key\"
-*** Using AWS_ACCOUNT_ID:   \"$aws_account_id\"
-*** Using AWS_REGION:       \"$aws_region\"
-*** Using AWS_ARCHITECTURE: \"$aws_architecture\"
-*** Using x509-cert.pem \"$AWS_CERT_PATH\"
-*** Using x509-pk.pem \"$AWS_PK_PATH\""
-log_output
-
-#################################################################################
 
 
 # ami descriptions and ami name
@@ -115,23 +104,8 @@ if  [[ "$blockDevice" == "y" ]]; then
 else
     blockDevice=""
 fi
-
-
 #######################################
-# device and mountpoint of the new volume; 
-# we put our new AMI onto this device(aws_volume)
-aws_ebs_device=/dev/xvdi
-lsblk
-echo    "Chose device to mount EBS volume. If $aws_ebs_device is not listed, type <ENTER>"
-echo -n "Else add letters to /dev/xvd"
-read letter
-if [[ "$letter" != "" ]]; then
-    aws_ebs_device=/dev/xvd$letter
-fi
-log_msg=" Using device:$aws_ebs_device"
-log_output
-
-aws_ebs_mount_point=/mnt/ebs
+## check if mount point exists
 if [[ ! -d $aws_ebs_mount_point ]]; then
   sudo mkdir $aws_ebs_mount_point
 fi
@@ -141,8 +115,34 @@ if [[ $result != yes ]]; then
   log_output
   exit -12
 fi
+log_msg=" Checking EBS mount point $aws_ebs_mount_point OK"
+log_output
 
 #######################################
+## check EBS Volume
+set +euf
+input=$(lsblk | grep aws_ebs_device)
+set +euf
+if [[ "$inpu" == "" ]]; then
+  log_msg=" ERROR: No volume attached to device $aws_ebs_device !! "
+  log_output
+  exit -12
+fi
+log_msg=" Checking EBS volume $aws_ebs_device OK
+*** $input"
+log_output
+
+#######################################
+log_msg="
+***
+*** Using AWS_ACCESS_KEY:   \"$aws_access_key\"
+*** Using AWS_ACCOUNT_ID:   \"$aws_account_id\"
+*** Using AWS_REGION:       \"$aws_region\"
+*** Using AWS_ARCHITECTURE: \"$aws_architecture\"
+*** Using x509-cert.pem \"$AWS_CERT_PATH\"
+*** Using x509-pk.pem \"$AWS_PK_PATH\""
+log_output
+
 ec2_api_version=$(sudo -E $EC2_HOME/bin/ec2-version)
 input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-versio)
 ec2_ami_version=${input:16:0}
@@ -151,11 +151,26 @@ log_msg="***
 *** Using virtual_type:$virtual_type
 *** Using block_device:$blockDevice
 *** Using EC2 API version:$ec2_api_version
-*** Using EC2 AMI TOOL version:$ec2_ami_version"
+*** Using EC2 AMI TOOL version:$ec2_ami_version
+*** Using device:$aws_ebs_device to copy the unbundled image to
+*** Using mount point:$aws_ebs_mount_point to mount the unbundled image
+*** Logging into file: \"$log_file\""
 log_output
 sleep 3
 start=$SECONDS
 
+#################################################################################
+echo -n "Do you want to bundle with these parameters?[y|N]"
+read input
+if [[ "$input" == "y" ]]; then
+  log_msg=" Aborting bundle proccess due to user input. EXIT"
+  log_output
+  exit -999
+else
+  log_msg=" Starting bundle proccess due to user input. "
+  log_output
+fi
+#################################################################################
 
 #######################################
 log_msg=" Bundleing AMI, this may take several minutes "
