@@ -43,7 +43,7 @@ setup_i386() {
 }
 
 # region
-aws_region=$AWS_REGION
+aws_region
 if [[ "$aws_region" == "" ]]; then
    echo " ERROR: No AWS_REGION given!! "
    return -2
@@ -51,7 +51,7 @@ fi
 echo "*** Using region: $AWS_REGION"
 
 # architecture
-aws_architecture=$AWS_ARCHITECTURE
+aws_architecture
 if [[ "$aws_architecture" == "" ]]; then
     echo " ERROR: No AWS_ARCHITECTURE given!! "
     return -3
