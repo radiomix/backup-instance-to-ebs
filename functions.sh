@@ -157,11 +157,11 @@ check_ec2_tools(){
   echo $java_bin  $java_path
   java_home=${java_path/'/bin/java'/''}
   ### set java home path
-  JAVA_HOME=$java_home
+  export JAVA_HOME=$java_home
   log_mesg=" JAVA_HOME set to  \"$java_home\""
   log_output
   $JAVA_HOME/bin/java -version
-
+  
   ######################################
   ## put EC2 install path in $PATH..
   ## we expect EC2 to be installed under /usr/local/ec2
@@ -171,11 +171,8 @@ check_ec2_tools(){
   ami_tool=$(ls $ec2_prefix | grep ami)
   api_tool=$(ls $ec2_prefix | grep api)
 
-  #export EC2_AMITOOL_HOME=$ami_tool
-  #export EC2_HOME=$api_tool
-  #export PATH=$PATH:$EC2_AMITOOL_HOME/bin:$EC2_HOME/bin
-  EC2_AMITOOL_HOME=$ami_tool
-  EC2_HOME=$api_tool
+  export EC2_AMITOOL_HOME=$ec2_prefix$ami_tool
+  export EC2_HOME=$ec2_prefix$api_tool
   PATH=$EC2_AMITOOL_HOME/bin:$EC2_HOME/bin:$PATH
 
   ### check if sudo ec2-path is ok:
