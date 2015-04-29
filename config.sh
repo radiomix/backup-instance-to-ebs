@@ -4,6 +4,9 @@
 #
 ######################################
 
+## user input
+declare input
+
 ## log message
 declare log_msg
 
