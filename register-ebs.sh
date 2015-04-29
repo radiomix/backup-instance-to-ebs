@@ -192,7 +192,6 @@ manifest=$AWS_MANIFEST
 
 ## get the kernel image (aki) 
 source select_pvgrub_kernel.sh
-echo "*** Using kernel:$AWS_KERNEL"
 
 ## profiling
 end=$SECONDS
@@ -210,6 +209,7 @@ log_msg="***
 ***
 *** Bundled AMI:$current_instance_id of AMI:$current_ami_id in $period seconds"
 log_output
+sleep 2
 
 ######################################
 ## extract image name and copy image to EBS volume
@@ -265,7 +265,7 @@ log_output
 
 #######################################
 ## register a new AMI from the snapshot
-output=$($EC2_HOME/bin/ec2-register -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $AWS_ARCHITECTURE --kernel $AWS_KERNEL)
+output=$($EC2_HOME/bin/ec2-register -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture --kernel $aws_kernel)
 echo $output
 echo $output >> $log_file
 aws_registerd_ami_id=$(echo $output | cut -d ' ' -f 2)
