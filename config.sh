@@ -17,6 +17,14 @@ date_fmt=$(date '+%F-%H-%M')
 ## create a new directory for each bundle run
 bundle_dir="/mnt/ami-bundle/$date_fmt/"
 
+## we expect an EBS volume to be attached
+## because we write unbundled image to this device
+aws_ebs_device=/dev/xvdi
+
+## the directory where we mount the $aws_ebs_device
+## to check it
+aws_ebs_mount_point=/mnt/ebs
+
 ## needed commands
 command_list="curl wget ruby unzip openssl java pv"
 
