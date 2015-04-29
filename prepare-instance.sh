@@ -16,6 +16,8 @@
 ## read functions and config
 source $(dirname $0)/functions.sh
 source $(dirname $0)/config.sh
+set -euf
+set -o pipefail
 
 start_logging
 
@@ -25,7 +27,10 @@ check_commands
 ######################################
 ## install api/ami tools under /usr/local/ec2
 echo "*** Installing AWS TOOLS"
-ec2_prefix="/usr/local/ec2/"
+if [[ -d $ec2_prefix ]]; then
+  log_msg=" Directory $ec2_prefix exists, reinstall latest version!"
+  sudo rm -rf $ec2_prefix
+fi
 sudo mkdir $ec2_prefix
 sudo rm -rf $ec2_prefix/*
 rm -f ec2-ami-tools.zip ec2-api-tools.zip
@@ -64,21 +69,9 @@ log_output
 sudo grub-install --version
 sudo apt-get install -y grub
 grub_version=$(grub --version)
-log_msg="Grub version:$grub_version."
+log_msg=" Grub version:$grub_version."
 log_output
 
-#######################################
-## find root device to check grub version
-log_msg=" Checking root device"
-log_output
-
-mount | grep sda
-lsblk  #not on all distros available
-### read the root device
-echo -n "Enter the root device: /dev/"
-read _device
-root_device="/dev/$_device"
-sudo file -s $root_device | grep "part /$"
 
 #######################################
 ### show boot cmdline parameter and adjust /boot/grub/menu.lst
@@ -88,13 +81,15 @@ echo "*** Next line holds BOOT COMMAND LINE PARAMETERS:"
 cat /proc/cmdline
 cat /proc/cmdline >> $log_file
 echo "*** Next line holds KERNEL PARAMETERS in /boot/grub/menu.lst:"
+set +euf
 grep ^kernel /boot/grub/menu.lst
 grep ^kernel /boot/grub/menu.lst >> $log_file
+set -euf
 echo
 echo  "If first entry differs from BOOT COMMAND LINE PARAMETER, please edit /boot/grub/menu.list "
 echo -n "Do you want to edit /boot/grub/menu.list to reflect command line? [y|N]:"
-read edit
-if  [[ "$edit" == "y" ]]; then
+read input
+if  [[ "$input" == "y" ]]; then
     cat /boot/grub/menu.lst | sudo tee -a $log_file
     log_msg=" Editing /boot/grub/menu.lst"
     log_output
@@ -106,7 +101,9 @@ fi
 ### remove evi entries in /etc/fstab if exist
 log_msg=" Checking for efi/uefi partitions in /etc/fstab"
 log_output
+set +euf
 efi=$(grep -i efi /etc/fstab)
+set -euf
 if [[ "$efi" != "" ]]; then
   echo "Please delete these UEFI/EFI partition entries \"$efi\" in /etc/fstab"
   sleep 4
@@ -121,9 +118,12 @@ else
 fi
 
 #######################################
-log_msg=" You can now run ./register-ebs.sh to copy $current_instance_id into an EBS AMI.
-*** FINISHED TO PREPARE AMI $currend_instance_id"
+log_msg=" 
+*** You can now run ./register-ebs.sh to copy $current_instance_id into an EBS AMI.
+*** FINISHED TO PREPARE AMI $current_instance_id"
 log_output
 log_msg=$(date)
 log_output
+echo 
 echo "Logfile of this run: $log_file "
+echo 
