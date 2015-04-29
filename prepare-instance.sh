@@ -123,7 +123,7 @@ log_msg="
 *** You can now run ./register-ebs.sh to copy $current_instance_id into an EBS AMI.
 *** FINISHED TO PREPARE AMI $current_instance_id"
 log_output
-log_msg=$(date)
+log_msg=" "$(date)
 log_output
 echo 
 echo "Logfile of this run: $log_file "
