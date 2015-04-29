@@ -1,12 +1,12 @@
-# instance-to-ebs
+# backup-instance-to-ebs
 Backup an Instance Backed AMI into an EBS Backed AMI
 
 The [AWS
 docu](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-instance-store.html#Using_ConvertingS3toEBS) 
 describes how to copy an Instance Stored AMI into an EBS backed AMI. 
 As it is a process with several steps, split the task in two. 
+______
 
-________
 ## **Step 1**: Prepare the Instance backed AMI
 We prepare the Instance backed AMI to be bundles later. This step is
 only performed once. It installs EC2 API and EC2 Tools, checks vor
