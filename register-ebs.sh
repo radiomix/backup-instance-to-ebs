@@ -283,6 +283,11 @@ log_msg=" Registerd new AMI:$aws_registerd_ami_id"
 log_output
 
 #######################################
+## tag snapshot
+log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_snapshot_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
+log_output
+
+#######################################
 cd $cwd
 log_msg=" Finished! Created AMI: $aws_registerd_ami_id ***"
 log_output
