@@ -44,7 +44,7 @@ The scripts relay on these packages to be installed:
  **Step 2** also requires two X.509 files,one certificate
 and one private key. The should be uploaded to `$aws_cert_directory`.
 
-Section [X.509](#X509) describes how to generate both files.
+Section [X.509](#x509) describes how to generate both files.
 
 ###Bundling Parameter
 We use the following parameter for bundling:
