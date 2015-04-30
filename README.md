@@ -8,7 +8,7 @@ As it is a process with several steps, we split the task in two. **Step 1**
 prepares the AMI and **Step 2** preformace the bundle task. Assuming an
 EBS volume stays attached to the instance, **Step 2** can be repeated
 each time the instance was configured newly. All neccessary
-configuration parameters are set in `config.sh`.
+configuration parameters are set in [`config.sh`](#config).
 ______
 
 ##**Step 1**: Prepare the Instance backed AMI
@@ -19,13 +19,13 @@ necessary packages (`wget, openssl, java, unzip`), installs packages
 ```
 $./prepare-instance.sh
 ```
-Each run gets logged to log file `$log_file` in `$log_dir`.
+Each run gets [logged](#logging) to log file `$log_file` in `$log_dir`.
 
 ##**Step 2**: Bundle and register the prepared Instance backed AMI into an EBS backed AMI
 We rely on the Instance to be prepared as in **Step 1** and check the bundle
 parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI onto 
 an attached EBS volume and register a snapshot and an EBS backed AMI.
-Each run gets logged to log file `$log_file` in `$log_dir`.
+Each run gets [logged](#logging) to log file `$log_file` in `$log_dir`.
 
 ```
 $./register-ebs.sh
@@ -88,7 +88,7 @@ checked or set by the scripts:
   - create a snapshot and registers an AMI
  + [`functions.sh`](functions.sh)
   - collection of functions used by both scripts
- + [`config.sh`](config.sh)
+ + [`config.sh`](config.sh)(#config)
   - configuration variables used by both scripts
 
 ###Logging
