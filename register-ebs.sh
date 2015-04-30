@@ -48,7 +48,6 @@ check_aws_credentials
 set_aws_x509_path
 
 
-
 # ami descriptions and ami name
 aws_ami_description="$project $current_instance_id of $date_fmt "
 aws_ami_name="$project-bundle-instance-$date_fmt"
@@ -64,10 +63,6 @@ aws_secret_key=$AWS_SECRET_KEY
 
 # descriptions
 aws_snapshot_description="$project AMI: "$current_instance_id", Snapshot to register new EBS AMI"
-
-## services to stop/start while bundeling
-services="jenkins rabbitmq-server redis-server jpdm revealcloud"
-log_msg=" These services will stop/start during bundle process:\"$service\""
 
 ## end config variables
 ######################################
@@ -91,19 +86,20 @@ fi
 
 #######################################
 ### do we need --block-device-mapping for ec2-bundle-volume ?
-echo -n "Do you want to bundle with parameter \"--block-device-mapping \"? [y|N]:"
-read blockDevice
-if  [[ "$blockDevice" == "y" ]]; then
-  echo "Root device is set to \"$root_device\". Select root device [xvda|sda] in device mapping:[x|S]"
-  read blockDevice
-  if  [[ "$blockDevice" == "x" ]]; then
-    blockDevice="  --block-device-mapping ami=xvda,root=/dev/xvda1 "
-  else
-    blockDevice="  --block-device-mapping ami=sda,root=/dev/sda1 "
-  fi
-else
-    blockDevice=""
-fi
+### as we are of type paravirtual, we don't need this parameter
+#echo -n "Do you want to bundle with parameter \"--block-device-mapping \"? [y|N]:"
+#read blockDevice
+#if  [[ "$blockDevice" == "y" ]]; then
+#  echo "Root device is set to \"$root_device\". Select root device [xvda|sda] in device mapping:[x|S]"
+#  read blockDevice
+#  if  [[ "$blockDevice" == "x" ]]; then
+#    blockDevice="  --block-device-mapping ami=xvda,root=/dev/xvda1 "
+#  else
+#    blockDevice="  --block-device-mapping ami=sda,root=/dev/sda1 "
+#  fi
+#else
+#    blockDevice=""
+#fi
 #######################################
 ## check if mount point exists
 if [[ ! -d $aws_ebs_mount_point ]]; then
@@ -150,7 +146,6 @@ ec2_ami_version=${input::16}
 log_msg="***
 *** Using partition:$partition
 *** Using virtual_type:$virtual_type
-*** Using block_device:$blockDevice
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
 *** Using :$bundle_dir to bundled this machine 
@@ -198,10 +193,8 @@ end=$SECONDS
 period=$(($end - $start))
 log_msg="***  
 *** PARAMETER USED:
-*** Root device:$root_device
 *** Grub version:$(grub --version)
 *** Bundle folder:$bundle_dir
-*** Block device mapping:$blockDevice
 *** Partition flag:$partition
 *** Virtualization:$virtual_type
 *** Manifest:$prefix.manifest.xml
