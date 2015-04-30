@@ -96,7 +96,7 @@ log_output
 #  if  [[ "$blockDevice" == "x" ]]; then
 #    blockDevice="  --block-device-mapping ami=xvda,root=/dev/xvda1 "
 #  else
-#    blockDevice="  --block-device-mapping ami=sda,root=/dev/sda1 "
+    blockDevice="  --block-device-mapping ami=sda,root=/dev/sda1 "
 #  fi
 #else
 #    blockDevice=""
@@ -161,6 +161,7 @@ input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-version)
 ec2_ami_version=${input::15}
 log_msg="***
 *** Using virtual_type:$virtual_type
+*** Using block_device:$blockDevice
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
 *** Using :$bundle_dir to bundled this machine 
@@ -212,6 +213,7 @@ log_msg="***
 *** PARAMETER USED:
 *** Grub version:$(grub --version)
 *** Bundle folder:$bundle_dir
+*** Block device mapping:$blockDevice
 *** Virtualization:$virtual_type
 *** Manifest:$prefix.manifest.xml
 *** Region:$aws_region
