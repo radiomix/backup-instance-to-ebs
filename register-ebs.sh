@@ -282,12 +282,6 @@ log_output
 log_msg=" Registerd new AMI:$aws_registerd_ami_id"
 log_output
 
-######################################
-## unmount and detach EBS volume
-log_msg=" Detaching EBS Volume:$aws_bundle_volume_id"
-log_output
-$EC2_HOME/bin/ec2-detach-volume $aws_bundle_volume_id --region $aws_region -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY
-
 #######################################
 cd $cwd
 log_msg=" Finished! Created AMI: $aws_registerd_ami_id ***"
