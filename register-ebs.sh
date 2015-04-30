@@ -134,14 +134,9 @@ log_output
 ## check EBS volue id
 log_msg=" Checking EBS volume id to copy to"
 log_output
-echo -n "Please type in the EBS volume id to copy this machine to:"
-read input
-if [[ "$input" == "" ]]; then
-  log_msg=" ERROR: No EBS volume id given. EXIT"
-  log_output
-  exit -51
-fi
-volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_bundle_volume_id | grep attached)
+#volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_bundle_volume_id | grep attached)
+volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_bundle_volume_id )
+echo "volume status:$volume_status"
 if [[]]; then
   log_msg=" ERROR: EBS volume: $aws_bundle_volume_id not attached "
   log_output

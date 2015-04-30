@@ -5,15 +5,6 @@
 
 
 ######################################
-## write $log_msg to stdout and to $log_file
-log_output(){
-  log_message="***$log_msg"
-	echo "$log_message"
-	echo "$log_message" >> $log_file
-}
-
-
-######################################
 ## checks config var $aws_credentials
 check_aws_credentials(){
 #declare credentials
@@ -109,55 +100,6 @@ fi
 }
 
 
-######################################
-## let user reset services to be
-## stopped/started during bundle proces
-set_start_stop_servie(){
-  echo "These services can be stopped during bundling:"
-  echo "\"$services\""
-  echo -n "Do you want to stop services \"$services\" [n|Y]".
-  read input
-  if [[ "$input" == "n" ]];then
-    echo "You can type in services you want to stop, each seperated by white space."
-    echo -n "Please type the services that you want to stop:"
-    read services
-  fi
-}
-
-######################################
-## start/stop every service in $services
-## according to $start_stop_command
-start_stop_service(){
-	for daemon in ${services[*]}; do
-		sudo service  $daemon $start_stop_command
-	done
-}
-
-######################################
-## prepare log file with some messages
-## we log in $bundle_dir, attach date
-## to caller script name e.g.: prepare-instance-2015-09-22-23-55-59.log
-start_logging(){
-  # check if log file directory is writable
-  if [[ ! -d $bundle_dir ]]; then
-      sudo mkdir -p $bundle_dir
-  fi
-  result=$(sudo test -w $bundle_dir && echo yes)
-  if [[ $result != yes ]]; then
-    echo "*** ERROR: Directory $bundle_dir to bundle the image is not writable by user root!! "
-    exit -3
-  fi
-  # log file
-  base=$(basename $0)
-  caller=${base::-3}
-  log_file=$log_dir$caller"-"$date_fmt.log
-  echo "Logging to file $log_file" && sleep 2
-  sudo touch $log_file
-  sudo chown $(whoami) $log_file
-  date >> $log_file
-  whoami >> $log_file
-}
-
 
 ######################################
 ## set JAVA_HOME and EC2 in PATH
@@ -197,3 +139,63 @@ check_ec2_tools(){
   log_output
 return
 }
+
+
+######################################
+## write $log_msg to stdout and to $log_file
+log_output(){
+  log_message="***$log_msg"
+	echo "$log_message"
+	echo "$log_message" >> $log_file
+}
+
+######################################
+## prepare log file with some messages
+## we log in $bundle_dir, attach date
+## to caller script name e.g.: prepare-instance-2015-09-22-23-55-59.log
+start_logging(){
+  # check if log file directory is writable
+  if [[ ! -d $bundle_dir ]]; then
+      sudo mkdir -p $bundle_dir
+  fi
+  result=$(sudo test -w $bundle_dir && echo yes)
+  if [[ $result != yes ]]; then
+    echo "*** ERROR: Directory $bundle_dir to bundle the image is not writable by user root!! "
+    exit -3
+  fi
+  # log file
+  base=$(basename $0)
+  caller=${base::-3}
+  log_file=$log_dir$caller"-"$date_fmt.log
+  echo "Logging to file $log_file" && sleep 2
+  sudo touch $log_file
+  sudo chown $(whoami) $log_file
+  date >> $log_file
+  whoami >> $log_file
+}
+
+
+######################################
+## let user reset services to be
+## stopped/started during bundle proces
+set_start_stop_servie(){
+  echo "These services can be stopped during bundling:"
+  echo "\"$services\""
+  echo -n "Do you want to stop services \"$services\" [n|Y]".
+  read input
+  if [[ "$input" == "n" ]];then
+    echo "You can type in services you want to stop, each seperated by white space."
+    echo -n "Please type the services that you want to stop:"
+    read services
+  fi
+}
+
+######################################
+## start/stop every service in $services
+## according to $start_stop_command
+start_stop_service(){
+	for daemon in ${services[*]}; do
+		sudo service  $daemon $start_stop_command
+	done
+}
+

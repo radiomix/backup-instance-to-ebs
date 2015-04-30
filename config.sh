@@ -27,6 +27,10 @@ log_dir=$bundle_location
 ## because we write unbundled image to this device
 aws_ebs_device=/dev/xvdi
 
+## the id of the EBS volume to bundle this machine to
+## should be attached to this machine under $aws_ebs_device
+aws_bundle_volume_id=vol-b2a5c3a0
+
 ## the directory where we mount the $aws_ebs_device
 ## to check it
 aws_ebs_mount_point=/mnt/ebs
