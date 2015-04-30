@@ -13,9 +13,15 @@ declare log_msg
 ## date as YYYY-MM-DD-hh-mm-ss
 date_fmt=$(date '+%F-%H-%M')
 
+## bundle location
+bundle_location="/mnt/ami-bundle/"
+
 ## bundle directory, should be on a partition with lots of space
 ## create a new directory for each bundle run
-bundle_dir="/mnt/ami-bundle/$date_fmt/"
+bundle_dir="$bundle_location/$date_fmt/"
+
+## log directory we log one up bundle-dir
+log_dir=$bundle_location
 
 ## we expect an EBS volume to be attached
 ## because we write unbundled image to this device

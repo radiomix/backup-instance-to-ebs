@@ -150,7 +150,7 @@ start_logging(){
   # log file
   base=$(basename $0)
   caller=${base::-3}
-  log_file=$bundle_dir$caller"-"$date_fmt.log
+  log_file=$log_dir$caller"-"$date_fmt.log
   echo "Logging to file $log_file" && sleep 2
   sudo touch $log_file
   sudo chown $(whoami) $log_file
