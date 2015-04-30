@@ -44,7 +44,7 @@ The scripts relay on these packages to be installed:
  **Step 2** also requires two X.509 files,one certificate
 and one private key. The should be uploaded to `$aws_cert_directory`.
 
-Section [X.509](#x509) describes how to generate both files.
+Section [X.509](X.509) describes how to generate both files.
 
 ### Bundling Parameter
 We use the following parameter for bundling:
@@ -98,7 +98,7 @@ The date reflexts a directory under wich to find the relevant
 bundle files.
 
 --------
-###<a name="#x509"></a> X.509 Certificate and Private Key
+### X.509
 **Step 2** needs  **X.509 Cert** and **Private Key** as
 EC2 commands partly use an X.509 certificate -even self signed- to
 encrypt communication. **Step 2** lets the user input file names
