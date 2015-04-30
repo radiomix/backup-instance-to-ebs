@@ -11,7 +11,7 @@ each time the instance was configured newly. All neccessary
 configuration parameters are set in `config.sh`.
 ______
 
-## **Step 1**: Prepare the Instance backed AMI
+##**Step 1**: Prepare the Instance backed AMI
 This step is only performed once. It installs EC2 API and EC2 Tools, checks vor
 necessary packages (`wget, openssl, java, unzip`), installs packages
 `kpartx, gdisk, grub v0.97` and prepares `/boot/grub/menu.list` and
@@ -21,7 +21,7 @@ $./prepare-instance.sh
 ```
 Each run gets logged to log file `$log_file` in `$log_dir`.
 
-## **Step 2**: Bundle and register the prepared Instance backed AMI into an EBS backed AMI
+##**Step 2**: Bundle and register the prepared Instance backed AMI into an EBS backed AMI
 We rely on the Instance to be prepared as in **Step 1** and check the bundle
 parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI onto 
 an attached EBS volume and register a snapshot and an EBS backed AMI.
@@ -32,7 +32,7 @@ $./register-ebs.sh
 ```
 --------
 
-### Prerequisites
+###Prerequisites
 The scripts relay on these packages to be installed:
 * _unzip_
 * _wget_
@@ -44,9 +44,9 @@ The scripts relay on these packages to be installed:
  **Step 2** also requires two X.509 files,one certificate
 and one private key. The should be uploaded to `$aws_cert_directory`.
 
-Section [X.509](X.509) describes how to generate both files.
+Section [X.509](#X509) describes how to generate both files.
 
-### Bundling Parameter
+###Bundling Parameter
 We use the following parameter for bundling:
  * virtualization type:paravirtual or hvm (gets checkt by
    `register-ebs.sh`)
@@ -71,7 +71,7 @@ checked or set by the scripts:
   Java installed (set by script)
 
 -------------
-### Scripts
+###Scripts
  + [`prepare-instance.sh`](prepare-instance.sh)
   - install `ec2-api-tools` and `ec2-ami-tools` under `$ec2_prefix`
   - checks for Java installatation and asks to install `default-jre`,
@@ -91,14 +91,14 @@ checked or set by the scripts:
  + [`config.sh`](config.sh)
   - configuration variables used by both scripts
 
-### Logging
+###Logging
 Logfiles of each run of one of the scripts are placed under `$log_dir`
 and prefixed with the script name and suffixed with the date.
 The date reflexts a directory under wich to find the relevant
 bundle files.
 
 --------
-### X.509
+###X509
 **Step 2** needs  **X.509 Cert** and **Private Key** as
 EC2 commands partly use an X.509 certificate -even self signed- to
 encrypt communication. **Step 2** lets the user input file names
