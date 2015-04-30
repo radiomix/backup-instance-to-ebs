@@ -131,6 +131,26 @@ log_msg=" Checking EBS volume $aws_ebs_device OK
 log_output
 
 #######################################
+## check EBS volue id
+log_msg=" Checking EBS volume id to copy to"
+log_output
+echo -n "Please type in the EBS volume id to copy this machine to:"
+read input
+if [[ "$input" == "" ]]; then
+  log_msg=" ERROR: No EBS volume id given. EXIT"
+  log_output
+  exit -51
+fi
+volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_bundle_volume_id | grep attached)
+if [[]]; then
+  log_msg=" ERROR: EBS volume: $aws_bundle_volume_id not attached "
+  log_output
+  exit 52
+fi
+log_msg=volume_status
+log_output
+
+#######################################
 log_msg="
 ***
 *** Using AWS_ACCESS_KEY:   \"$aws_access_key\"
@@ -143,7 +163,7 @@ log_output
 
 ec2_api_version=$(sudo -E $EC2_HOME/bin/ec2-version)
 input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-version)
-ec2_ami_version=${input::16}
+ec2_ami_version=${input::15}
 log_msg="***
 *** Using virtual_type:$virtual_type
 *** Using EC2 API version:$ec2_api_version
@@ -151,6 +171,7 @@ log_msg="***
 *** Using :$bundle_dir to bundled this machine 
 *** Using device:$aws_ebs_device to copy the unbundled image to
 *** Using mount point:$aws_ebs_mount_point to mount the unbundled image
+*** Using EBS volume id:$aws_bundle_volume_id to copy mashine to
 *** Logging into file: \"$log_file\""
 log_output
 sleep 3
