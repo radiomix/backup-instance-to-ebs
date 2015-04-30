@@ -41,9 +41,9 @@ The scripts relay on these packages to be installed:
 * _openssl_ 
  
 * X.509 Certificate
- **Step 2** also requires two X.509 files,one certificate
-and one private key. The should be uploaded to `$aws_cert_directory`.
 
+**Step 2** also requires two X.509 files,one certificate
+and one private key beeing uploaded to `$aws_cert_directory`.
 Section [X.509](#x509) describes how to generate both files.
 
 ###Bundling Parameter
