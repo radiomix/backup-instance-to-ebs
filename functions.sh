@@ -18,18 +18,22 @@ log_output(){
 check_aws_credentials(){
 #declare credentials
 for credential in ${aws_credentials}; do
+found=0
 set +euf
   val=$(env | grep $credential| cut -d '=' -f 2)
 set +euf
   if [[ "$val" == "" ]]; then
+    found=1
     log_msg=" ERROR Variable $credential not set! EXIT!"
     log_output
-    exit -30
   else
     log_msg=" Variable $credential set!"
     log_output
   fi
 done
+if [[ "$found" == "1" ]]; then
+    exit -30
+fi
 ## disguise user input
 aws_access_key=${AWS_ACCESS_KEY:0:3}********${AWS_ACCESS_KEY:${#AWS_ACCESS_KEY}-3:3}
 aws_account_id=${AWS_ACCOUNT_ID:0:3}********${AWS_ACCOUNT_ID:${#AWS_ACCOUNT_ID}-3:3}
@@ -86,16 +90,22 @@ fi
 ## are present or exit
 check_commands(){
 for command in ${command_list}; do
+found=0
+  set +euf
   bin=$(which $command)
+  set -euf
   if [[ "$bin" == "" ]]; then
+    found=1
     log_msg=" ERROR: Command \"$command\" not found! Please install \"$command\"! "
     log_output
-    exit -10
   else
     log_msg=" Found command \"$command\" OK!"
     log_output
   fi
 done
+if [[ "$found" == "1" ]]; then
+    exit -10
+fi
 }
 
 
@@ -130,7 +140,7 @@ start_stop_service(){
 start_logging(){
   # check if log file directory is writable
   if [[ ! -d $bundle_dir ]]; then
-      sudo mkdir $bundle_dir
+      sudo mkdir -p $bundle_dir
   fi
   result=$(sudo test -w $bundle_dir && echo yes)
   if [[ $result != yes ]]; then
