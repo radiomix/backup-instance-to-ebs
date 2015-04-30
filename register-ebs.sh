@@ -49,7 +49,7 @@ set_aws_x509_path
 
 
 # ami descriptions and ami name
-aws_ami_description="$project $current_instance_id of $date_fmt "
+aws_ami_description="$project copied from AMI $current_instance_id at $date_fmt "
 aws_ami_name="$project-bundle-instance-$date_fmt"
 
 # image file prefix
