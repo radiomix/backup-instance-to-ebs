@@ -33,7 +33,7 @@ aws_bundle_volume_id=vol-b2a5c3a0
 
 ## the directory where we mount the $aws_ebs_device
 ## to check it
-aws_ebs_mount_point=/mnt/ebs
+aws_ebs_mount_point=/mnt/ami-snapshot
 
 ## needed commands
 command_list="curl wget ruby unzip openssl java pv"
