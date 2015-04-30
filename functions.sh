@@ -44,9 +44,10 @@ done
 ######################################
 ## x509-pd/cert file path.
 set_aws_x509_path(){
-echo " We expect the certificate in \"$aws_cert_directory\""
+log_msg=" We expect the certificate in \"$aws_cert_directory\""
+log_output
 if [ -d $aws_cert_directory ]; then 
-  echo "Found these files in $aws_cert_directory "
+  log_msg= "Found these files in $aws_cert_directory "
   ls $aws_cert_directory
 fi
 
@@ -106,7 +107,8 @@ fi
 check_ec2_tools(){
   ######################################
   # set java path used by ec-tools
-  echo "*** SETTING JAVA PATH"
+  log_msg= " *** SETTING JAVA PATH"
+  log_output
   java_bin=$(which java)
   java_path=$(readlink -f $java_bin)
   echo $java_bin  $java_path
@@ -144,7 +146,7 @@ return
 ######################################
 ## write $log_msg to stdout and to $log_file
 log_output(){
-  log_message="***$log_msg"
+  log_message="[$(date)]$log_msg"
 	echo "$log_message"
 	echo "$log_message" >> $log_file
 }
@@ -160,7 +162,8 @@ start_logging(){
   fi
   result=$(sudo test -w $bundle_dir && echo yes)
   if [[ $result != yes ]]; then
-    echo "*** ERROR: Directory $bundle_dir to bundle the image is not writable by user root!! "
+    log_msg=" ERROR: Directory $bundle_dir to bundle the image is not writable by user root!! "
+    log_output
     exit -3
   fi
   # log file
@@ -171,7 +174,8 @@ start_logging(){
   sudo touch $log_file
   sudo chown $(whoami) $log_file
   date >> $log_file
-  whoami >> $log_file
+  log_msg=" Script called by user "$(whoami)
+  log_output
 }
 
 
@@ -179,14 +183,19 @@ start_logging(){
 ## let user reset services to be
 ## stopped/started during bundle proces
 set_start_stop_servie(){
-  echo "These services can be stopped during bundling:"
-  echo "\"$services\""
+  log_msg=" These services can be stopped during bundling:
+ \"$services\""
+  log_output
   echo -n "Do you want to stop services \"$services\" [n|Y]".
   read input
   if [[ "$input" == "n" ]];then
-    echo "You can type in services you want to stop, each seperated by white space."
+    log_msg="You can type in services you want to stop, each seperated by white space."
+    log_output
     echo -n "Please type the services that you want to stop:"
     read services
+    log_msg=" These services will be stopped during bundling:
+ \"$services\""
+  log_output
   fi
 }
 

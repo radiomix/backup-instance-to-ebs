@@ -42,14 +42,16 @@ sudo unzip -q ec2-ami-tools.zip  -d /usr/local/ec2/
 
 ######################################
 # set java path used by ec-tools
-echo "*** SETTING JAVA PATH"
+log_msg="*** SETTING JAVA PATH"
+log_ouput
 java_bin=$(which java)
 java_path=$(readlink -f $java_bin)
 echo $java_bin  $java_path
 java_home=${java_path/'/bin/java'/''}
 ### set java home path
 JAVA_HOME=$java_home
-echo "*** JAVA_HOME set to  \"$java_home\"" 
+log_msg="*** JAVA_HOME set to  \"$java_home\""
+log_output
 $JAVA_HOME/bin/java -version
 
 
@@ -75,18 +77,22 @@ log_output
 
 #######################################
 ### show boot cmdline parameter and adjust /boot/grub/menu.lst
-echo "*** Checking for boot parameters"
+log_msg=" Checking for boot parameters"
+log_output
 echo ""
-echo "*** Next line holds BOOT COMMAND LINE PARAMETERS:"
+log_msg=" Next line holds BOOT COMMAND LINE PARAMETERS:"
+log_output
 cat /proc/cmdline
 cat /proc/cmdline >> $log_file
-echo "*** Next line holds KERNEL PARAMETERS in /boot/grub/menu.lst:"
+log_msg=" Next line holds KERNEL PARAMETERS in /boot/grub/menu.lst:"
+log_output
 set +euf
 grep ^kernel /boot/grub/menu.lst
 grep ^kernel /boot/grub/menu.lst >> $log_file
 set -euf
 echo
-echo  "If first entry differs from BOOT COMMAND LINE PARAMETER, please edit /boot/grub/menu.list "
+log_msg="If first entry differs from BOOT COMMAND LINE PARAMETER, please edit /boot/grub/menu.list "
+log_output
 echo -n "Do you want to edit /boot/grub/menu.list to reflect command line? [y|N]:"
 read input
 if  [[ "$input" == "y" ]]; then
@@ -123,7 +129,7 @@ log_msg="
 *** You can now run ./register-ebs.sh to copy $current_instance_id into an EBS AMI.
 *** FINISHED TO PREPARE AMI $current_instance_id"
 log_output
-log_msg=" "$(date)
+log_msg=" "
 log_output
 echo 
 echo "Logfile of this run: $log_file "

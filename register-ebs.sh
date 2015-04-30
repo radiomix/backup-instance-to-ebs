@@ -293,5 +293,6 @@ log_output
 cd $cwd
 log_msg=" Finished! Created AMI: $aws_registerd_ami_id ***"
 log_output
-date >> $log_file
+log_msg=" "  
+log_output  
 
