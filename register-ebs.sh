@@ -104,7 +104,7 @@ log_output
 #######################################
 ## check if mount point exists
 if [[ ! -d $aws_ebs_mount_point ]]; then
-  sudo mkdir $aws_ebs_mount_point
+  sudo mkdir -p $aws_ebs_mount_point
 fi
 result=$(sudo test -w $aws_ebs_mount_point && echo yes)
 if [[ $result != yes ]]; then

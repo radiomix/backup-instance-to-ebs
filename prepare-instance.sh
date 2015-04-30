@@ -31,7 +31,7 @@ if [[ -d $ec2_prefix ]]; then
   log_msg=" Directory $ec2_prefix exists, reinstall latest version!"
   sudo rm -rf $ec2_prefix
 fi
-sudo mkdir $ec2_prefix
+sudo mkdir -p $ec2_prefix
 sudo rm -rf $ec2_prefix/*
 rm -f ec2-ami-tools.zip ec2-api-tools.zip
 
