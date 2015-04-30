@@ -98,7 +98,7 @@ The date reflexts a directory under wich to find the relevant
 bundle files.
 
 --------
-###<a name="#x509"></> X.509 Certificate and Private Key
+###<a name="#x509"></a> X.509 Certificate and Private Key
 **Step 2** needs  **X.509 Cert** and **Private Key** as
 EC2 commands partly use an X.509 certificate -even self signed- to
 encrypt communication. **Step 2** lets the user input file names
