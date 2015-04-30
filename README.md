@@ -8,7 +8,7 @@ As it is a process with several steps, we split the task in two. **Step 1**
 prepares the AMI and **Step 2** preformace the bundle task. Assuming an
 EBS volume stays attached to the instance, **Step 2** can be repeated
 each time the instance was configured newly. All neccessary
-configuration parameters are set in [`config.sh`](#config).
+configuration parameters are set in [`config.sh`](config.sh).
 ______
 
 ##**Step 1**: Prepare the Instance backed AMI
@@ -88,7 +88,7 @@ checked or set by the scripts:
   - create a snapshot and registers an AMI
  + [`functions.sh`](functions.sh)
   - collection of functions used by both scripts
- + [`config.sh`](config.sh)(#config)
+ + [`config.sh`](config.sh)
   - configuration variables used by both scripts
 
 ###Logging
