@@ -76,13 +76,14 @@ profile=${meta_data_profile##default-}
 ### used in ec2-bundle-volume
 virtual_type="--virtualization-type "$profile" "
 
-echo "*** Found virtualization type $profile"
+log_msg=" Found virtualization type $profile"
+log_output
 ## on paravirtual AMI every thing is fine here
-partition=""
-## for hvm AMI we set partition mbr
-if  [[ "$profile" == "hvm" ]]; then
-  partition="  --partition mbr "
-fi
+#partition=""
+### for hvm AMI we set partition mbr
+#if  [[ "$profile" == "hvm" ]]; then
+#  partition="  --partition mbr "
+#fi
 
 #######################################
 ### do we need --block-device-mapping for ec2-bundle-volume ?
@@ -144,7 +145,6 @@ ec2_api_version=$(sudo -E $EC2_HOME/bin/ec2-version)
 input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-version)
 ec2_ami_version=${input::16}
 log_msg="***
-*** Using partition:$partition
 *** Using virtual_type:$virtual_type
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
@@ -172,7 +172,8 @@ fi
 #######################################
 log_msg=" Bundleing AMI, this may take several minutes "
 log_output
-log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $AWS_PK_PATH -c $AWS_CERT_PATH -u $AWS_ACCOUNT_ID -r x86_64 -e /tmp/cert/ -d $bundle_dir -p $prefix  $blockDevice $partition --no-filter --batch"
+log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $AWS_PK_PATH -c $AWS_CERT_PATH -u $AWS_ACCOUNT_ID -r x86_64 -e /tmp/cert/ -d $bundle_dir -p $prefix  $blockDevice --no-filter --batch"
+$log_msg
 log_output
 sleep 2
 
@@ -195,7 +196,6 @@ log_msg="***
 *** PARAMETER USED:
 *** Grub version:$(grub --version)
 *** Bundle folder:$bundle_dir
-*** Partition flag:$partition
 *** Virtualization:$virtual_type
 *** Manifest:$prefix.manifest.xml
 *** Region:$aws_region
@@ -258,11 +258,11 @@ log_output
 
 #######################################
 ## register a new AMI from the snapshot
-output=$($EC2_HOME/bin/ec2-register -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture --kernel $aws_kernel)
-echo $output
-echo $output >> $log_file
-aws_registerd_ami_id=$(echo $output | cut -d ' ' -f 2)
-output=$($EC2_HOME/bin/ec2-create-tags $aws_registerd_ami_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
+log_msg=$($EC2_HOME/bin/ec2-register -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture --kernel $aws_kernel)
+log_output
+aws_registerd_ami_id=$(echo $log_msg | cut -d ' ' -f 2)
+log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_registerd_ami_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
+log_output
 log_msg=" Registerd new AMI:$aws_registerd_ami_id"
 log_output
 
