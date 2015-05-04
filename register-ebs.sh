@@ -50,7 +50,7 @@ set_aws_x509_path
 
 
 # ami descriptions and ami name
-aws_ami_description="$project copied from AMI $current_instance_id at $date_fmt "
+aws_ami_description="$project from $current_instance_id at $date_fmt "
 aws_ami_name="$project-bundle-instance-$date_fmt"
 
 # image file prefix
@@ -168,7 +168,7 @@ log_msg="***
 *** Using :$bundle_dir to bundled this machine 
 *** Using device:$aws_snapshot_device to copy the unbundled image to
 *** Using mount point:$aws_snapshot_mount_point to mount the unbundled image
-*** Using EBS volume id:$aws_snapshot_volume_id to copy mashine to
+*** Using EBS volume id:$aws_snapshot_volume_id to copy machine to
 *** Logging into file: \"$log_file\""
 log_output
 sleep 3
