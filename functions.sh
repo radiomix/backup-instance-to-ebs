@@ -44,12 +44,8 @@ done
 ######################################
 ## x509-pd/cert file path.
 set_aws_x509_path(){
-log_msg=" We expect the certificate in \"$aws_cert_directory\""
+log_msg=" We expect the x509 certificate"
 log_output
-if [ -d $aws_cert_directory ]; then 
-  log_msg= "Found these files in $aws_cert_directory "
-  ls $aws_cert_directory
-fi
 
 if [[ "$AWS_CERT_PATH" == "" ]]; then
   echo -n "Enter /path/to/x509-cert.pem: "
