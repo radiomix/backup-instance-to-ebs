@@ -103,42 +103,42 @@ log_output
 #fi
 #######################################
 ## check if mount point exists
-if [[ ! -d $aws_ebs_mount_point ]]; then
-  sudo mkdir -p $aws_ebs_mount_point
+if [[ ! -d $aws_snapshot_mount_point ]]; then
+  sudo mkdir -p $aws_snapshot_mount_point
 fi
-result=$(sudo test -w $aws_ebs_mount_point && echo yes)
+result=$(sudo test -w $aws_snapshot_mount_point && echo yes)
 if [[ $result != yes ]]; then
-  log_msg=" ERROR: directory $aws_ebs_mount_point to mount the image is not writable!! "
+  log_msg=" ERROR: directory $aws_snapshot_mount_point to mount the image is not writable!! "
   log_output
   exit -12
 fi
-log_msg=" Checking EBS mount point $aws_ebs_mount_point OK"
+log_msg=" Checking EBS mount point $aws_snapshot_mount_point OK"
 log_output
 
 #######################################
-## check EBS Volume
+## check snapshot Volume
 set +euf
-ebs_name=$(echo $aws_ebs_device | cut -d '/' -f 3)
+ebs_name=$(echo $aws_snapshot_device | cut -d '/' -f 3)
 input=$(lsblk | grep $ebs_name) 
 set +euf
 if [[ "$input" == "" ]]; then
-  log_msg=" ERROR: No volume attached to device $aws_ebs_device "
+  log_msg=" ERROR: No volume attached to device $aws_snapshot_device "
   log_output
   exit -12
 fi
-log_msg=" Checking EBS volume $aws_ebs_device OK
+log_msg=" Checking EBS volume $aws_snapshot_device OK
 *** $input"
 log_output
 
 #######################################
-## check EBS volue id
+## check snapshot volume id
 log_msg=" Checking EBS volume id to copy to"
 log_output
-volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_bundle_volume_id | grep attached)
+volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_snapshot_volume_id | grep attached)
 log_msg=$volume_status
 log_oputput
 if [[ "$volume_status" == "" ]]; then
-  log_msg=" ERROR: EBS volume: $aws_bundle_volume_id not attached "
+  log_msg=" ERROR: EBS volume: $aws_snapshot_volume_id not attached "
   log_output
   exit 52
 fi
@@ -165,9 +165,9 @@ log_msg="***
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
 *** Using :$bundle_dir to bundled this machine 
-*** Using device:$aws_ebs_device to copy the unbundled image to
-*** Using mount point:$aws_ebs_mount_point to mount the unbundled image
-*** Using EBS volume id:$aws_bundle_volume_id to copy mashine to
+*** Using device:$aws_snapshot_device to copy the unbundled image to
+*** Using mount point:$aws_snapshot_mount_point to mount the unbundled image
+*** Using EBS volume id:$aws_snapshot_volume_id to copy mashine to
 *** Logging into file: \"$log_file\""
 log_output
 sleep 3
@@ -226,37 +226,37 @@ sleep 2
 ## extract image name and copy image to EBS volume
 image=${manifest/.manifest.xml/""}
 size=$(du -sb $bundle_dir/$image | cut -f 1)
-log_msg=" Copying $bundle_dir/$image of size $size to $aws_ebs_device.
+log_msg=" Copying $bundle_dir/$image of size $size to $aws_snapshot_device.
 ***  This may take several minutes!"
 log_output
-#sudo dd if=$bundle_dir/$image of=$aws_ebs_device bs=1M
+#sudo dd if=$bundle_dir/$image of=$aws_snapshot_device bs=1M
 size=$(du -sb $bundle_dir/$image | cut -f 1)
-sudo dd if=$bundle_dir/$image | pv -s $size | sudo dd of=$aws_ebs_device bs=1M
+sudo dd if=$bundle_dir/$image | pv -s $size | sudo dd of=$aws_snapshot_device bs=1M
 
-log_msg="*** Checking partition $aws_ebs_device"
+log_msg="*** Checking partition $aws_snapshot_device"
 log_output
-sudo partprobe $aws_ebs_device
+sudo partprobe $aws_snapshot_device
 
 ######################################
-## check /etc/fstab on EBS volume
-## mount EBS volume
-sudo mount -o rw $aws_ebs_device $aws_ebs_mount_point
+## check /etc/fstab on snapshot volume
+## mount snapshot volume
+sudo mount -o rw $aws_snapshot_device $aws_snapshot_mount_point
 ## edit /etc/fstab to remove ephimeral partitions
-ephimeral=$(grep ephimeral $aws_ebs_mount_point/etc/fstab)
+ephimeral=$(grep ephimeral $aws_snapshot_mount_point/etc/fstab)
 if [[ "$ephimeral" != "" ]]; then
-    echo "Edit $aws_ebs_mount_point/etc/fstab to remove ephimeral partitions"
+    echo "Edit $aws_snapshot_mount_point/etc/fstab to remove ephimeral partitions"
     sleep 5
-    sudo vi $aws_ebs_mount_point/etc/fstab
+    sudo vi $aws_snapshot_mount_point/etc/fstab
 fi
-# unmount EBS volume
-sudo umount $aws_ebs_device
+# unmount snapshot volume
+sudo umount $aws_snapshot_device
 
 #######################################
 ## create a snapshot and verify it
-log_msg=" Creating Snapshot from Volume:$aws_bundle_volume_id.
+log_msg=" Creating Snapshot from Volume:$aws_snapshot_volume_id.
  This may take several minutes"
 log_output
-log_msg=$($EC2_HOME/bin/ec2-create-snapshot $aws_bundle_volume_id --region $aws_region -d "$aws_snapshot_description" -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY )
+log_msg=$($EC2_HOME/bin/ec2-create-snapshot $aws_snapshot_volume_id --region $aws_region -d "$aws_snapshot_description" -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY )
 aws_snapshot_id=$(echo $log_msg| cut -d ' ' -f 2)
 log_output
 echo -n "*** Using snapshot:$aws_snapshot_id. Waiting to become ready . "
