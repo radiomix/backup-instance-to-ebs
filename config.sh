@@ -28,7 +28,7 @@ log_dir=$bundle_location
 aws_snapshot_device=/dev/xvdi
 
 ## the id of the EBS volume to bundle this machine to
-## should be attached to this machine under $aws_ebs_device
+## should be attached to this machine under $aws_snapshot_device
 aws_snapshot_volume_id=vol-b2a5c3a0
 
 ## the directory where we mount the $aws_ebs_device
