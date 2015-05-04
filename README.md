@@ -5,8 +5,8 @@ The [AWS
 docu](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-instance-store.html#Using_ConvertingS3toEBS)
 describes how to copy an Instance Stored AMI into an EBS backed AMI.
 As it is a process with several steps, we split the task in two. **Step 1**
-prepares the AMI and **Step 2** preformace the bundle task. Assuming an
-EBS volume stays attached to the instance, **Step 2** can be repeated
+prepares the AMI and **Step 2** performs the bundle task. Assuming an
+snapshot volume stays attached to the instance, **Step 2** can be repeated
 each time the instance was configured newly. All neccessary
 configuration parameters are set in [`config.sh`](config.sh).
 ______
@@ -24,7 +24,7 @@ Each run gets [logged](#logging) to log file `$log_file` in `$log_dir`.
 ##**Step 2**: Bundle and register the prepared Instance backed AMI into an EBS backed AMI
 We rely on the Instance to be prepared as in **Step 1** and check the bundle
 parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI onto 
-an attached EBS volume and register a snapshot and an EBS backed AMI.
+an attached snapshot volume and register a snapshot and an EBS backed AMI.
 Each run gets [logged](#logging) to log file `$log_file` in `$log_dir`.
 
 ```
@@ -82,9 +82,9 @@ checked or set by the scripts:
  + [`register-ebs.sh`](register-ebs.sh)
   - export env variables for AWS credentials.
   - check and set bundle parameters
-  - check attached EBS volume
+  - check attached snapshot volume
   - bundle the image locally
-  - unbundle the image to the attached EBS volume
+  - unbundle the image to the attached snapshot volume
   - create a snapshot and registers an AMI
  + [`functions.sh`](functions.sh)
   - collection of functions used by both scripts
