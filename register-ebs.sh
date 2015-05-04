@@ -19,6 +19,7 @@
 #   - install gdisk, kpartx to partition
 #   - adjust kernel command line parameters in /boot/grub/menu.lst
 #   - bundle the AMI locally (is there enough space on this machine?)
+#   - exclude jenkins home from bundle
 #   - upload the AMI
 #   - register the AMI
 #   - delete the local bundle
@@ -189,7 +190,7 @@ fi
 #######################################
 log_msg=" Bundleing AMI, this may take several minutes "
 log_output
-log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $AWS_PK_PATH -c $AWS_CERT_PATH -u $AWS_ACCOUNT_ID -r x86_64 -e /tmp/cert/ -d $bundle_dir -p $prefix  $blockDevice --no-filter --batch"
+log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $AWS_PK_PATH -c $AWS_CERT_PATH -u $AWS_ACCOUNT_ID -r x86_64 -e $jenkins_home -d $bundle_dir -p $prefix  $blockDevice --no-filter --batch"
 $log_msg
 log_output
 sleep 2
