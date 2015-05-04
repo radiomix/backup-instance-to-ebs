@@ -47,9 +47,6 @@ services="jenkins rabbitmq-server redis-server jpdm revealcloud"
 ## AWS CREDENTIALS needed
 aws_credentials="AWS_ACCESS_KEY AWS_SECRET_KEY AWS_ACCOUNT_ID "
 
-## AWS Cercificate directory
-aws_cert_directory="/tmp/cert/"
-
 ## project as prefix
 project="jenkinspoc"
 
