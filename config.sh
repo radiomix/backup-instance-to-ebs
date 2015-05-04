@@ -25,15 +25,15 @@ log_dir=$bundle_location
 
 ## we expect an EBS volume to be attached
 ## because we write unbundled image to this device
-aws_ebs_device=/dev/xvdi
+aws_snapshot_device=/dev/xvdi
 
 ## the id of the EBS volume to bundle this machine to
 ## should be attached to this machine under $aws_ebs_device
-aws_bundle_volume_id=vol-b2a5c3a0
+aws_snapshot_volume_id=vol-b2a5c3a0
 
 ## the directory where we mount the $aws_ebs_device
 ## to check it
-aws_ebs_mount_point=/mnt/ami-snapshot
+aws_snapshot_mount_point=/mnt/ami-snapshot
 
 ## needed commands
 command_list="curl wget ruby unzip openssl java pv"
@@ -52,9 +52,6 @@ project="jenkinspoc"
 
 # EC2 install dir
 ec2_prefix="/usr/local/ec2/"
-
-# snapshot mount directory
-snapshot_dir="/mnt/ami-snapshot"
 
 ## we assume x86_64
 aws_architecture="x86_64"
