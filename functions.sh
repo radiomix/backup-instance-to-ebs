@@ -107,7 +107,7 @@ fi
 check_ec2_tools(){
   ######################################
   # set java path used by ec-tools
-  log_msg= " *** SETTING JAVA PATH"
+  log_msg=" *** SETTING JAVA PATH"
   log_output
   java_bin=$(which java)
   java_path=$(readlink -f $java_bin)
