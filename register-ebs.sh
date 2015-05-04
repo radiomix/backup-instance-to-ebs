@@ -3,9 +3,9 @@
 #  http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-instance-store.htm
 #
 # Prerequisite:
-#    THE FOLLOWING IS USUMED:
-#   - X509-cert-key-file.pem on this machine under: /tmp/cert/
-#   - X509-pk-key-file.pem on this machine assuming under: /tmp/cert/
+#    THE FOLLOWING IS ASUMED:
+#   - X509-cert-key-file.pem on this machine
+#   - X509-pk-key-file.pem on this machine
 #   - AWS_ACCESS_KEY, AWS_SECRET_KEY and AWS_ACCOUNT_ID is known to the caller 
 #   - AWS API/AMI tools installed under /user/local/ec2 and in $PATH
 #   - JAVA installed
