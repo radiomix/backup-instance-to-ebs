@@ -13,6 +13,9 @@ declare log_msg
 ## date as YYYY-MM-DD-hh-mm-ss
 date_fmt=$(date '+%F-%H-%M')
 
+## exclude from bundle/snapshot jenkins home
+jenkins_home="/var/lib/jenkins"
+
 ## bundle location
 bundle_location="/mnt/ami-bundle/"
 
