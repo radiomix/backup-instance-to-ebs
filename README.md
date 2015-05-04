@@ -10,6 +10,11 @@ snapshot volume stays attached to the instance, **Step 2** can be repeated
 each time the instance was configured newly. All neccessary
 configuration parameters are set in [`config.sh`](config.sh).
 ______
+###Usage
+Attach an EBS volume to device `$aws_snapshot_device`,
+adjust `aws_snapshot_volume_id` and other parameters
+in `config.sh`, upload your X.509 Cert files and run
+both steps.
 
 ##**Step 1**: Prepare the Instance backed AMI
 This step is only performed once. It installs EC2 API and EC2 Tools, checks vor
