@@ -43,7 +43,7 @@ sudo unzip -q ec2-ami-tools.zip  -d /usr/local/ec2/
 ######################################
 # set java path used by ec-tools
 log_msg="*** SETTING JAVA PATH"
-log_ouput
+log_output
 java_bin=$(which java)
 java_path=$(readlink -f $java_bin)
 echo $java_bin  $java_path
