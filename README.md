@@ -5,47 +5,48 @@ The [AWS
 docu](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-instance-store.html#Using_ConvertingS3toEBS)
 describes how to copy an Instance Stored AMI into an EBS backed AMI.
 As it is a process with several steps, we split the task in two. **Step 1**
-prepares the AMI and **Step 2** performs the bundle task. Assuming an
+prepares the AMI and **Step 2** performs the bundle task. Assuming a 
 snapshot volume stays attached to the instance, **Step 2** can be repeated
 each time the instance was configured newly. All neccessary
 configuration parameters are set in [`config.sh`](config.sh).
+Each run of either step gets [logged](#logging) to log file `$log_file` in `$log_dir`.
 ______
-###Usage
+##Usage
 Attach an EBS volume to device `$aws_snapshot_device`,
-adjust `aws_snapshot_volume_id` and other parameters
-in `config.sh`, upload your X.509 Cert files and run
-both steps.
+adjust `$aws_snapshot_volume_id` to reflect the volume id and other parameters
+in `config.sh` and upload your X.509 Cert files. You are ready to run
+both steps:
 
-##**Step 1**: Prepare the Instance backed AMI
+**Step 1**.
+
+###**Step 1** `prepare-instance.sh`
 This step is only performed once. It installs EC2 API and EC2 Tools, checks vor
-necessary packages (`wget, openssl, java, unzip`), installs packages
+necessary packages (`wget, openssl, java, unzip, pv`), installs packages
 `kpartx, gdisk, grub v0.97` and prepares `/boot/grub/menu.list` and
-`/etc/fstab`. 
+`/etc/fstab`.
 ```
 $./prepare-instance.sh
 ```
-Each run gets [logged](#logging) to log file `$log_file` in `$log_dir`.
 
-##**Step 2**: Bundle and register the prepared Instance backed AMI into an EBS backed AMI
+###**Step 2** `register-ebs.sh`
+This step bundles the prepared instance and registers it as an EBS backed AMI.
 We rely on the Instance to be prepared as in **Step 1** and check the bundle
 parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI onto 
 an attached snapshot volume and register a snapshot and an EBS backed AMI.
-Each run gets [logged](#logging) to log file `$log_file` in `$log_dir`.
 
 ```
 $./register-ebs.sh
 ```
 --------
 
-###Prerequisites
+##Prerequisites
 The scripts relay on these packages to be installed:
 * _unzip_
 * _wget_
 * _ruby_
 * _java run time environment (default_jre)_ 
 * _openssl_ 
- 
-* X.509 Certificate
+* pv
 
 **Step 2** also requires two X.509 files,one certificate
 and one private key beeing uploaded to `$aws_cert_directory`.
@@ -126,9 +127,9 @@ under `$aws_cert_directory`.
 
 #### AMIs
 The following AMIs have been successfully bundled and registered:
-- ami-75755545 Ubuntu 12.04, amd64, instance-store, aki-fc8f11cc
-- ami-a7785897 Ubuntu 12.04, amd64, hvm;instance-store, hvm
-- ami-75c09945 Ubuntu 10.04, amd64, instance-store, aki-fc8f11cc
-- ami-c15379f1 Ubuntu 12.04, amd64, instance-store, aki-fc8f11cc
+- [ami-75755545](http://thecloudmarket.com/image/ami-75755545--ubuntu-images-ubuntu-precise-12-04-amd64-server-20150227) Ubuntu 12.04, amd64, instance-store, aki-fc8f11cc
+- [ami-a7785897](http://thecloudmarket.com/image/ami-a7785897--ubuntu-images-hvm-instance-ubuntu-precise-12-04-amd64-server-20150227) Ubuntu 12.04, amd64, hvm;instance-store, hvm
+- [ami-75c09945](http://thecloudmarket.com/image/ami-75c09945--ubuntu-images-ubuntu-lucid-10-04-amd64-server-20150127) Ubuntu 10.04, amd64, instance-store, aki-fc8f11cc
+- [ami-c15379f1](http://thecloudmarket.com/image/ami-c15379f1--ubuntu-images-ubuntu-precise-12-04-amd64-server-20150413) Ubuntu 12.04, amd64, instance-store, aki-fc8f11cc
 
 
