@@ -95,6 +95,8 @@ checked or set by the scripts:
   - collection of functions used by both scripts
  + [`config.sh`](config.sh)
   - configuration variables used by both scripts
+ + [`select_pvgrub_kernel.sh`](select_pvgrub_kernel.sh)
+  - select the proper PVGRUB [AKI kernel](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedKernels.html#configuringGRUB) accroding to AWS region and architecture
 
 ###Logging
 Logfiles of each run of one of the scripts are placed under `$log_dir`
