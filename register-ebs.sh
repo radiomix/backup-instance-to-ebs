@@ -137,7 +137,7 @@ log_msg=" Checking EBS volume id to copy to"
 log_output
 volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_snapshot_volume_id | grep attached)
 log_msg=$volume_status
-log_oputput
+log_output
 if [[ "$volume_status" == "" ]]; then
   log_msg=" ERROR: EBS volume: $aws_snapshot_volume_id not attached "
   log_output
