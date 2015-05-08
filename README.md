@@ -17,7 +17,6 @@ adjust `$aws_snapshot_volume_id` to reflect the volume id and other parameters
 in `config.sh` and upload your X.509 Cert files. You are ready to run
 both steps:
 
-**Step 1**.
 
 ###**Step 1** `prepare-instance.sh`
 This step is only performed once. It installs EC2 API and EC2 Tools, checks vor
