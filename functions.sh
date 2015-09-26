@@ -1,8 +1,11 @@
 #!/bin/bash
 #
-# functions
+# collect functions in this file!
 #
-
+# Author: Michael Kloeckner
+# Email:  mkl[at]im7[dot]de
+# Date:   Sept 2015
+#
 
 ######################################
 ## checks config var $aws_credentials
@@ -96,8 +99,6 @@ if [[ "$found" == "1" ]]; then
 fi
 }
 
-
-
 ######################################
 ## set JAVA_HOME and EC2 in PATH
 check_ec2_tools(){
@@ -138,7 +139,6 @@ check_ec2_tools(){
 return
 }
 
-
 ######################################
 ## write $log_msg to stdout and to $log_file
 log_output(){
@@ -174,7 +174,6 @@ start_logging(){
   log_output
 }
 
-
 ######################################
 ## let user reset services to be
 ## stopped/started during bundle proces
@@ -203,4 +202,3 @@ start_stop_service(){
 		sudo service  $daemon $start_stop_command
 	done
 }
-

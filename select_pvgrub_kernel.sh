@@ -1,20 +1,22 @@
-#!/bin/bash 
+#!/bin/bash
 #
 # get the AWS region and the architecture and select the proper PVGRUB AKI kernel
 # Kernels: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedKernels.html#configuringGRUB
 #
-
-# Prerequisite:
-# we expect the AWS_REGION and AWS_ARCHITECTURE to be exported as environment variable 
+# Author: Michael Kloeckner
+# Email:  mkl[at]im7[dot]de
+# Date:   Sept 2015
 #
-
+# Prerequisite:
+# we expect the AWS_REGION and AWS_ARCHITECTURE to be exported as environment variable
+#
 #############################
 ##
 ## For each reagion ther are two kernels
 ## one for each architecture
 ##
 #############################
-## kernel list as of March 2015  
+## kernel list as of March 2015
 ## http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedKernels.html#configuringGRUB
 setup_x86_64() {
   kernels[ap-northeast-1]=aki-176bf516

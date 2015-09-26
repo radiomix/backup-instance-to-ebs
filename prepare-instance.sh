@@ -1,14 +1,19 @@
 #!/bin/bash
+#
 # Prepare an AMI with the AWS API/AMI tools
 #   http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/set-up-ec2-cli-linux.html
 #   http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/set-up-ami-tools.html
 #  Prerequisites:
-#   - we check for ruby, unzip, wget, openssl 
+#   - we check for ruby, unzip, wget, openssl
 #            and default-jre (for command ec2-register (CLI Tools need JAVA), thus we check for an installed version
 #   - install kpart,gdisk,  grub legacy v 0.97
 #   - check on root device for /boot/grub/menu.lst and boot command line parameter
 #   - check for efi/uefi entries in /etc/fstab
 #       http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/set-up-ec2-cli-linux.html
+#
+# Author: Michael Kloeckner
+# Email:  mkl[at]im7[dot]de
+# Date:   Sept 2015
 #
 #######################################
 ## config variables
@@ -54,7 +59,6 @@ log_msg="*** JAVA_HOME set to  \"$java_home\""
 log_output
 $JAVA_HOME/bin/java -version
 
-
 ######################################
 ## prepare bundling
 
@@ -73,7 +77,6 @@ sudo apt-get install -y grub
 grub_version=$(grub --version)
 log_msg=" Grub version:$grub_version."
 log_output
-
 
 #######################################
 ### show boot cmdline parameter and adjust /boot/grub/menu.lst
@@ -123,9 +126,8 @@ else
   log_output
 fi
 
-
 #######################################
-log_msg=" 
+log_msg="
 *** You can now run ./register-ebs.sh to copy $current_instance_id into an EBS AMI.
 *** FINISHED TO PREPARE AMI $current_instance_id"
 log_output

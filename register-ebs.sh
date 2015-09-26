@@ -1,12 +1,17 @@
 #!/bin/bash
+#
 # Bundle Instance backed AMI, which was configured, to be registered as a new EBS backed AMI
 #  http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-instance-store.htm
+#
+# Author: Michael Kloeckner
+# Email:  mkl[at]im7[dot]de
+# Date:   Sept 2015
 #
 # Prerequisite:
 #    THE FOLLOWING IS ASUMED:
 #   - X509-cert-key-file.pem on this machine
 #   - X509-pk-key-file.pem on this machine
-#   - AWS_ACCESS_KEY, AWS_SECRET_KEY and AWS_ACCOUNT_ID is known to the caller 
+#   - AWS_ACCESS_KEY, AWS_SECRET_KEY and AWS_ACCOUNT_ID is known to the caller
 #   - AWS API/AMI tools installed under /user/local/ec2 and in $PATH
 #   - JAVA installed
 #   - Package kpart and gdisk are installed
@@ -23,7 +28,7 @@
 #   - upload the AMI
 #   - register the AMI
 #   - delete the local bundle
-
+#
 #######################################
 ## config variables
 cwd=$(pwd)
@@ -120,7 +125,7 @@ log_output
 ## check snapshot Volume
 set +euf
 ebs_name=$(echo $aws_snapshot_device | cut -d '/' -f 3)
-input=$(lsblk | grep $ebs_name) 
+input=$(lsblk | grep $ebs_name)
 set +euf
 if [[ "$input" == "" ]]; then
   log_msg=" ERROR: No volume attached to device $aws_snapshot_device "
@@ -165,7 +170,7 @@ log_msg="***
 *** Using block_device:$blockDevice
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
-*** Using :$bundle_dir to bundled this machine 
+*** Using :$bundle_dir to bundled this machine
 *** Using device:$aws_snapshot_device to copy the unbundled image to
 *** Using mount point:$aws_snapshot_mount_point to mount the unbundled image
 *** Using EBS volume id:$aws_snapshot_volume_id to copy machine to
@@ -173,6 +178,11 @@ log_msg="***
 log_output
 sleep 3
 start=$SECONDS
+
+#
+# to STOP $services before bundling uncomment next 2 lines
+#start_stop_command=stop
+#start_stop_service
 
 #################################################################################
 echo -n "Do you want to bundle with these parameters?[y|n]"
@@ -195,22 +205,20 @@ $log_msg
 log_output
 sleep 2
 
-## start services
-#start_stop_command=start
-#start_stop_service
+
 
 export AWS_MANIFEST=$prefix.manifest.xml
 
 ## manifest of the bundled AMI
 manifest=$AWS_MANIFEST
 
-## get the kernel image (aki) 
+## get the kernel image (aki)
 source select_pvgrub_kernel.sh
 
 ## profiling
 end=$SECONDS
 period=$(($end - $start))
-log_msg="***  
+log_msg="***
 *** PARAMETER USED:
 *** Grub version:$(grub --version)
 *** Bundle folder:$bundle_dir
@@ -290,10 +298,15 @@ log_output
 log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_snapshot_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
 log_output
 
+#
+# to START $services after bundeling uncomment next 2 lines
+#start_stop_command=start
+#start_stop_service
+
 #######################################
 cd $cwd
 log_msg=" Finished! Created AMI: $aws_registerd_ami_id ***"
 log_output
-log_msg=" "  
-log_output  
+log_msg=" "
+log_output
 

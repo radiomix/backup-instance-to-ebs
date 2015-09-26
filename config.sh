@@ -2,6 +2,10 @@
 #
 # set variables in this file!
 #
+# Author: Michael Kloeckner
+# Email:  mkl[at]im7[dot]de
+# Date:   Sept 2015
+#
 ######################################
 
 ## user input
@@ -67,5 +71,3 @@ aws_region=${aws_avail_zone::-1}
 # AMI and Instance ID we are bundling (This one!)
 current_ami_id=$(curl -s http://169.254.169.254/latest/meta-data/ami-id)
 current_instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
-
-
