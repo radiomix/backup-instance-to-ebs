@@ -116,21 +116,19 @@ bundle files.
 ###X509
 **Step 1 generates X.509 Cert and Private Key**.
 EC2 commands partly use an X.509 certificate -even self signed- to
-encrypt communication. You can also obtain them from the AWS
-console under _Security Credentials_ or generate them by hand, after
-openssl installation. To generate and self sign a certificate valid for
-10 years in 2048 bit type:
+encrypt communication. You can obtain the files from the AWS
+console under _Security Credentials_ or let **Step 1** generate them.
 ```bash
 openssl genrsa 2048 > private-key.pem
 openssl req -new -x509 -nodes -sha1 -days 3650 -key private-key.pem
 -outform PEM > certificate.pem
 ```
-Generating the certificate asks for information included in
+You will be asked for information included in
 the certificate. You can use the default values or input your data.
 The Certificate needs to be uploaded to the AWS console, showing a
 thumbprint. It is usefull to rename the cert and key file to reflect the
-thumbprint. Both cert and private key have to be uploaded onto the AMIs
-under `$aws_cert_directory`.
+thumbprint. Both files have to be present onto the AMI you want to
+bundle named `$aws_pk_path` and `$aws_cert_path`.
 
 #### AMIs
 The following AMIs have been successfully bundled and registered:
