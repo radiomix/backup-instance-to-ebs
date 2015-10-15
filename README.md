@@ -10,16 +10,19 @@ snapshot volume stays attached to the instance, **Step 2** can be repeated
 each time the instance was configured newly. All neccessary
 configuration parameters are set in [`config.sh`](config.sh).
 Each run of either step gets [logged](#logging) to log file `$log_file` in `$log_dir`.
+
 ______
+
 ##Usage
-Attach an EBS volume to device `$aws_snapshot_device`,
+Attach an EBS volume with a file system to device `$aws_snapshot_device`,
 adjust `$aws_snapshot_volume_id` to reflect the volume id and other parameters
-in `config.sh` and upload your X.509 Cert files. You are ready to run
-both steps:
+in `config.sh`. You are ready to convert your instance backed AMI into
+an EBS backed AMI:
 
 
 ###**Step 1** `prepare-instance.sh`
-This step is only performed once. It installs EC2 API and EC2 Tools, checks vor
+**This step is only performed once on the machine**. 
+It installs EC2 API and EC2 Tools, checks vor
 necessary packages (`wget, openssl, java, unzip, pv`), installs packages
 `kpartx, gdisk, grub v0.97` and prepares `/boot/grub/menu.list` and
 `/etc/fstab`.
@@ -31,7 +34,8 @@ It also genreates X509 files to bundle the new AMI.
 **User input may be required**.
 
 ###**Step 2** `register-ebs.sh`
-This step bundles the prepared instance and registers it as an EBS backed AMI.
+**This step could be performed on a regular basis**. 
+It bundles the prepared instance and registers it as an EBS backed AMI.
 We rely on the Instance to be prepared as in **Step 1** and check the bundle
 parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI ont 
 an attached snapshot volume and register a snapshot and an EBS backed AMI. 
@@ -68,8 +72,6 @@ checked or set by the scripts:
   + `AWS_ACCESS_KEY`="MY-ACCESS-KEY"
   + `AWS_SECRET_KEY`="My-Secret-Key"
   + `AWS_ACCOUNT_ID`="My-Account-Id"
-  + `AWS_CERT_PATH`="/path/to/my/x509-cert.pem"
-  + `AWS_PK_PATH`="/path/to/my/x509-pk.pem"
 * set by script
   + `AWS_REGION`="My-Region"
   + `AWS_ARCHITECTURE`=" i386 | x86_6"
@@ -89,6 +91,7 @@ checked or set by the scripts:
   - check for command line kernel parameters and its counterpart in
    `/boot/grub/menu.lst` and edit them
   - check for `efi` partitions in `/etc/fstab` and edit them
+  - generates X509 files 
  + [`register-ebs.sh`](register-ebs.sh)
   - export env variables for AWS credentials.
   - check and set bundle parameters
@@ -111,11 +114,9 @@ bundle files.
 
 --------
 ###X509
-**Step 2** needs  **X.509 Cert** and **Private Key** as
+**Step 1 generates X.509 Cert and Private Key**.
 EC2 commands partly use an X.509 certificate -even self signed- to
-encrypt communication. **Step 2** lets the user input file names
-and checks the presence of both files.
-You can either obtain them from the AWS
+encrypt communication. You can also obtain them from the AWS
 console under _Security Credentials_ or generate them by hand, after
 openssl installation. To generate and self sign a certificate valid for
 10 years in 2048 bit type:

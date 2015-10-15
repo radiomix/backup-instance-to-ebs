@@ -72,10 +72,20 @@ fi
 ######################################
 ## x509-pk/cert file path.
 set_aws_x509_path(){
-  log_msg=" Creating AWS X509 cert files $aws_cert_path and $aws_pk_path"
-  log_output
-  openssl genrsa 2048 > $aws_pk_path
-  openssl req -new -x509 -nodes -sha1 -days 3650 -key $aws_pk_path -outform PEM > $aws_cert_path
+  log_msg=" Checking AWS X509 cert files $aws_cert_path and $aws_pk_path"
+  echo $log_msg #log_output
+  if [ -f "$aws_cert_path" -a -f "$aws_pk_path" ] 
+  then
+   log_msg=" Found AWS X509 cert files $aws_pk_path and $aws_cert_path"
+   log_output
+  else
+   log_msg="** Generating AWS X509 cert files $aws_cert_path and $aws_pk_path."
+   log_output
+   openssl genrsa 2048 > $aws_pk_path
+   openssl req -new -x509 -nodes -sha1 -days 3650 -key $aws_pk_path -outform PEM > $aws_cert_path
+   log_msg="** Make shure you upload files $aws_cert_path and $aws_pk_path to your AWS account"
+   log_output
+  fi
 }
 
 ######################################
