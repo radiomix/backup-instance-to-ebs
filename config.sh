@@ -36,7 +36,7 @@ aws_snapshot_device=/dev/xvdi
 
 ## the id of the EBS volume to bundle this machine to
 ## should be attached to this machine under $aws_snapshot_device
-aws_snapshot_volume_id=vol-b2a5c3a0
+aws_snapshot_volume_id=vol-365192d0
 
 ## the directory where we mount the $aws_ebs_device
 ## to check it
@@ -50,6 +50,12 @@ services="jenkins rabbitmq-server redis-server jpdm revealcloud"
 
 ## AWS CREDENTIALS needed
 aws_credentials="AWS_ACCESS_KEY AWS_SECRET_KEY AWS_ACCOUNT_ID "
+
+## X509 Cert path
+aws_cert_path="/tmp/x509-cert.pem"
+
+## X509 Key path
+aws_pk_path="/tmp/x509-pk.pem"
 
 ## project as prefix
 project="jenkinspoc"
