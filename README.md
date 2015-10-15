@@ -139,3 +139,4 @@ The following AMIs have been successfully bundled and registered:
 - [ami-7de3f94d](http://https://cloud-images.ubuntu.com/locator/ec2/) Ubuntu 12.04, amd64,  hvm:instance-store
 
 
+
