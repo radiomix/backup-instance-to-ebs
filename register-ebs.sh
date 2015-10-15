@@ -49,10 +49,8 @@ check_ec2_tools
 
 ######################################
 ## aws credentials
-set_aws_credentials
 check_aws_credentials
-set_aws_x509_path
-
+check_aws_x509_path
 
 # ami descriptions and ami name
 aws_ami_description="$project from $current_instance_id at $date_fmt "
@@ -132,14 +130,11 @@ if [[ "$input" == "" ]]; then
   log_output
   exit -12
 fi
-log_msg=" Checking EBS volume $aws_snapshot_device OK
-*** $input"
+log_msg=" EBS volume $aws_snapshot_device OK"
 log_output
 
 #######################################
-## check snapshot volume id
-log_msg=" Checking EBS volume id to copy to"
-log_output
+## check snapshot volume and file system
 volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_snapshot_volume_id | grep attached)
 log_msg=$volume_status
 log_output
@@ -148,8 +143,14 @@ if [[ "$volume_status" == "" ]]; then
   log_output
   exit 52
 fi
-log_msg=volume_status
+log_msg=" Checking file system on $aws_snapshot_device"
 log_output
+fsck $aws_snapshot_device
+if [ ! "$?" == "0" ]; then
+  log_msg="*** ERROR: Check file system on  $aws_snapshot_device"
+  log_output
+  exit
+fi
 
 #######################################
 log_msg="
@@ -158,8 +159,8 @@ log_msg="
 *** Using AWS_ACCOUNT_ID:   \"$aws_account_id\"
 *** Using AWS_REGION:       \"$aws_region\"
 *** Using AWS_ARCHITECTURE: \"$aws_architecture\"
-*** Using x509-cert.pem \"$AWS_CERT_PATH\"
-*** Using x509-pk.pem \"$AWS_PK_PATH\""
+*** Using x509-cert.pem \"$aws_cert_path\"
+*** Using x509-pk.pem \"$aws_pk_path\""
 log_output
 
 ec2_api_version=$(sudo -E $EC2_HOME/bin/ec2-version)
@@ -185,17 +186,19 @@ start=$SECONDS
 #start_stop_service
 
 #################################################################################
-echo -n "Do you want to bundle with these parameters?[y|n]"
-read input
-if [[ "$input" != "y" ]]; then
-  log_msg=" Aborting bundle proccess due to user input. EXIT"
-  log_output
-  exit -999
-else
-  log_msg=" Starting bundle proccess due to user input. "
-  log_output
-fi
+#echo -n "Do you want to bundle with these parameters?[y|n]"
+#read input
+#if [[ "$input" != "y" ]]; then
+#  log_msg=" Aborting bundle proccess due to user input. EXIT"
+#  log_output
+#  exit -999
+#else
+#  log_msg=" Starting bundle proccess due to user input. "
+#  log_output
+
+#fi
 #################################################################################
+
 
 #######################################
 log_msg=" Bundleing AMI, this may take several minutes "
