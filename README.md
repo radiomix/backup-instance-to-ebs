@@ -26,12 +26,15 @@ necessary packages (`wget, openssl, java, unzip, pv`), installs packages
 ```
 $./prepare-instance.sh
 ```
+It also genreates X509 files to bundle the new AMI.
+*User input may be required*.
 
 ###**Step 2** `register-ebs.sh`
 This step bundles the prepared instance and registers it as an EBS backed AMI.
 We rely on the Instance to be prepared as in **Step 1** and check the bundle
-parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI onto 
-an attached snapshot volume and register a snapshot and an EBS backed AMI.
+parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI ont 
+an attached snapshot volume and register a snapshot and an EBS backed AMI. 
+*No user input should required*.
 
 ```
 $./register-ebs.sh
