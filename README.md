@@ -114,7 +114,6 @@ bundle files.
 
 --------
 ###X509
-**Step 1 generates X.509 Cert and Private Key**.
 EC2 commands partly use an X.509 certificate -even self signed- to
 encrypt communication. You can obtain the files from the AWS
 console under _Security Credentials_ or let **Step 1** generate them.
