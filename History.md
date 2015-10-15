@@ -1,8 +1,11 @@
 
-n.n.n / 2015-10-15 
+1.1.0 / 2015-10-15 
 ==================
 
  * pretty print output
+ * fix typo for X509 file variables
+ * add converted AMI ids
+
 
 1.0.4 / 2015-10-15 
 ==================
