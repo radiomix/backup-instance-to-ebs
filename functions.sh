@@ -45,35 +45,37 @@ done
 }
 
 ######################################
-## x509-pd/cert file path.
+## x509-pk/cert file path.
+check_aws_x509_path(){
+
+if [ ! -f "$aws_cert_path"  ]; then
+  error_msg=" ERROR: AWS X509 cert file:$aws_cert_path NOT FOUND!"
+  echo "$error_msg"
+  exit
+else 
+  log_msg=" File $aws_cert_path found!"
+  log_output
+  #aws_cert_path=$input
+fi
+
+if [  ! -f "$aws_pk_path" ]; then
+  error_msg=" ERROR: AWS X509 key file:$aws_pk_path NOT FOUND!"
+  echo "$error_msg"
+  exit
+else 
+  log_msg=" File $aws_pk_path found!"
+  log_output
+  #aws_cert_pk=$input
+fi
+}
+
+######################################
+## x509-pk/cert file path.
 set_aws_x509_path(){
-log_msg=" We expect the x509 certificate"
-log_output
-
-if [[ "$AWS_CERT_PATH" == "" ]]; then
-  echo -n "Enter /path/to/x509-cert.pem: "
-  read input
-  if [ ! -f "$input"  ]; then
-    log_msg=" ERROR: AWS X509 CERT FILE:$input NOT FOUND!"
-    log_output
-    exit -20
-  fi
-  export AWS_CERT_PATH=$input
-  #AWS_CERT_PATH=$input
-fi
-
-if [[ "$AWS_PK_PATH" == "" ]]; then
-  echo -n "Enter /path/to/x509-pk.pem: "
-  read input
-  if [  ! -f "$input" ]; then
-    error_msg=" ERROR: AWS X509 PK FILE:$input NOT FOUND!"
-    echo "$error_msg"
-    exit
-  fi
-  export AWS_PK_PATH=$input
-  #AWS_PK_PATH=$input
-fi
-
+  log_msg=" Creating AWS X509 cert files $aws_cert_path and $aws_pk_path"
+  log_output
+  openssl genrsa 2048 > $aws_pk_path
+  openssl req -new -x509 -nodes -sha1 -days 3650 -key $aws_pk_path -outform PEM > $aws_cert_path
 }
 
 ######################################
