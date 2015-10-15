@@ -266,8 +266,7 @@ sudo umount $aws_snapshot_device
 
 #######################################
 ## create a snapshot and verify it
-log_msg=" Creating Snapshot from Volume:$aws_snapshot_volume_id.
- This may take several minutes"
+log_msg=" Creating Snapshot from Volume:$aws_snapshot_volume_id. This may take several minutes"
 log_output
 log_msg=$($EC2_HOME/bin/ec2-create-snapshot $aws_snapshot_volume_id --region $aws_region -d "$aws_snapshot_description" -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY )
 aws_snapshot_id=$(echo $log_msg| cut -d ' ' -f 2)
