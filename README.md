@@ -135,6 +135,7 @@ The following AMIs have been successfully bundled and registered:
 - [ami-75755545](http://thecloudmarket.com/image/ami-75755545--ubuntu-images-ubuntu-precise-12-04-amd64-server-20150227) Ubuntu 12.04, amd64, instance-store, aki-fc8f11cc
 - [ami-a7785897](http://thecloudmarket.com/image/ami-a7785897--ubuntu-images-hvm-instance-ubuntu-precise-12-04-amd64-server-20150227) Ubuntu 12.04, amd64, hvm;instance-store, hvm
 - [ami-75c09945](http://thecloudmarket.com/image/ami-75c09945--ubuntu-images-ubuntu-lucid-10-04-amd64-server-20150127) Ubuntu 10.04, amd64, instance-store, aki-fc8f11cc
-- [ami-c15379f1](http://thecloudmarket.com/image/ami-c15379f1--ubuntu-images-ubuntu-precise-12-04-amd64-server-20150413) Ubuntu 12.04, amd64, instance-store, aki-fc8f11cc
+- [ami-47ebf177](http://https://cloud-images.ubuntu.com/locator/ec2/) Ubuntu 12.04, amd64, instance-store, aki-fc8f11cc
+- [ami-7de3f94d](http://https://cloud-images.ubuntu.com/locator/ec2/) Ubuntu 12.04, amd64,  hvm:instance-store
 
 
