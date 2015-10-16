@@ -57,7 +57,7 @@ The scripts relay on these packages to be installed:
 * pv
 
 **Step 2** also requires two X.509 files,one certificate
-and one private key beeing uploaded to `$aws_cert_directory`.
+and one private key beeing present at `$aws_cert_path` and `$aws_pk_path`.
 Section [X.509](#x509) describes how to generate both files.
 
 ###Bundling Parameter
@@ -116,7 +116,7 @@ bundle files.
 ###X509
 EC2 commands partly use an X.509 certificate -even self signed- to
 encrypt communication. You can obtain the files from the AWS
-console under _Security Credentials_ or let **Step 1** generate them.
+console under _Security Credentials_ or generate them.
 ```bash
 openssl genrsa 2048 > private-key.pem
 openssl req -new -x509 -nodes -sha1 -days 3650 -key private-key.pem
@@ -124,10 +124,9 @@ openssl req -new -x509 -nodes -sha1 -days 3650 -key private-key.pem
 ```
 You will be asked for information included in
 the certificate. You can use the default values or input your data.
-The Certificate needs to be uploaded to the AWS console, showing a
-thumbprint. It is usefull to rename the cert and key file to reflect the
-thumbprint. Both files have to be present onto the AMI you want to
-bundle named `$aws_pk_path` and `$aws_cert_path`.
+Both files have to be present on the AMI you want to
+bundle named after `$aws_pk_path` and `$aws_cert_path`.
+**Step 1** will generate both files if necessery.
 
 #### AMIs
 The following AMIs have been successfully bundled and registered:
