@@ -83,7 +83,6 @@ set_aws_x509_path(){
    log_output
    openssl genrsa 2048 > $aws_pk_path
    openssl req -new -x509 -nodes -sha1 -days 3650 -key $aws_pk_path -outform PEM > $aws_cert_path
-   log_msg="** Make shure you upload files $aws_cert_path and $aws_pk_path to your AWS account"
    log_output
   fi
 }
