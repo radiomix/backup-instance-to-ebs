@@ -120,8 +120,22 @@ log_msg=" Checking EBS mount point $aws_snapshot_mount_point OK"
 log_output
 
 #######################################
-## check snapshot Volume
+## attach snapshot Volume
 set +euf
+volume_status=$($EC2_HOME/bin/ec2-attach-volume $aws_snapshot_volume_id --region $aws_region --device $aws_snapshot_device --instance $current_instance_id) 
+echo -n " Waiting until volume $aws_snapshot_volume_id is attached"
+#######################################
+## wait until snapshot volume is attached
+completed=""
+while [[ "$completed" == "" ]]
+do
+    completed=$($EC2_HOME/bin/ec2-describe-volumes $aws_snapshot_volume_id --region $aws_region | grep attached)
+    echo -n ". "
+    sleep 3
+done
+echo ""
+log_msg=$($EC2_HOME/bin/ec2-describe-volumes $aws_snapshot_volume_id --region $aws_region | grep attached)
+log_output
 ebs_name=$(echo $aws_snapshot_device | cut -d '/' -f 3)
 input=$(lsblk | grep $ebs_name)
 set +euf
@@ -145,7 +159,7 @@ if [[ "$volume_status" == "" ]]; then
 fi
 log_msg=" Checking file system on $aws_snapshot_device"
 log_output
-fsck $aws_snapshot_device
+sudo fsck $aws_snapshot_device
 if [ ! "$?" == "0" ]; then
   log_msg="*** ERROR: Check file system on  $aws_snapshot_device"
   log_output
