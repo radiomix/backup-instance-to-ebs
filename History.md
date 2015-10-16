@@ -1,4 +1,12 @@
 
+1.1.1 / 2015-10-16 
+==================
+
+ * sudo mount
+ * sudo fsck, attach volume and wait until it is attached
+ * docu update
+ * pretty print output
+
 1.1.0 / 2015-10-15 
 ==================
 

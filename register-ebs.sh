@@ -165,7 +165,7 @@ if [ ! "$?" == "0" ]; then
   log_output
   exit
 fi
-mount $aws_snapshot_device $aws_snapshot_mount_point
+sudo mount $aws_snapshot_device $aws_snapshot_mount_point
 
 #######################################
 log_msg="
