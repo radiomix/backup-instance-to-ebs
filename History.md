@@ -1,4 +1,11 @@
 
+1.2.0 / 2015-10-16 
+==================
+
+ * fix typo
+ * use different parameter to convert hvm/paravirtual instances
+ * delete output 'upload x509 files', not needed in AWS console
+
 1.1.2 / 2015-10-16 
 ==================
 

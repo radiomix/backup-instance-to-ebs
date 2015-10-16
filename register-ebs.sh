@@ -98,7 +98,7 @@ if  [[ "$profile" == "hvm" ]]; then
 else # for paravirtial type we set the kernel
   ## get the kernel image (aki)
   source select_pvgrub_kernel.sh
-  kernel_parameter="--kernel $aws_kernel "
+  kernel_parameter=" --kernel $aws_kernel "
 fi
 
 #######################################
@@ -197,7 +197,7 @@ log_msg="***
 *** Using Grub version:$(grub --version)
 *** Using virtual_type:$virtual_type
 *** Using kernel parameter:$kernel_parameter
-*** Using partition parameter :$partition
+*** Using partition parameter:$partition
 *** Using block_device:$blockDevice
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
