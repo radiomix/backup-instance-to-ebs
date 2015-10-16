@@ -77,17 +77,29 @@ aws_snapshot_description="$project AMI: "$current_instance_id", Snapshot to regi
 ### returning [default-paravirtual|default-hvm]
 meta_data_profile=$(curl -s http://169.254.169.254/latest/meta-data/profile/ | grep "default-")
 profile=${meta_data_profile##default-}
-### used in ec2-bundle-volume
-virtual_type="--virtualization-type "$profile" "
+## on paravirtual AMI we only set the kernel
+## on hvm we need to setup ec2-tools parameters
+# used in ec2-bundle-vol
+partition=""
+# next tow params are used in ec2-register
+virtual_type=""
+kernel_parameter=""
 
-log_msg=" Found virtualization type $profile"
-log_output
-## on paravirtual AMI every thing is fine here
-#partition=""
-### for hvm AMI we set partition mbr
-#if  [[ "$profile" == "hvm" ]]; then
-#  partition="  --partition mbr "
-#fi
+### for hvm AMI we set partition mbr, virtual type
+if  [[ "$profile" == "hvm" ]]; then
+  virtual_type="--virtualization-type "$profile" "
+  log_msg=" Found virtualization type $profile"
+  log_output
+  partition="  --partition mbr "
+  log_msg=" Using partition parameter $partition in ec2-bundle-vol"
+  log_output
+  log_msg=" Using virtualization parameter $virtual_type in ec2-register"
+  log_output
+else # for paravirtial type we set the kernel
+  ## get the kernel image (aki)
+  source select_pvgrub_kernel.sh
+  kernel_parameter="--kernel $aws_kernel "
+fi
 
 #######################################
 ### do we need --block-device-mapping for ec2-bundle-volume ?
@@ -157,14 +169,14 @@ if [[ "$volume_status" == "" ]]; then
   log_output
   exit 52
 fi
-log_msg=" Checking file system on $aws_snapshot_device"
-log_output
-sudo fsck $aws_snapshot_device
-if [ ! "$?" == "0" ]; then
-  log_msg="*** ERROR: Check file system on  $aws_snapshot_device"
-  log_output
-  exit
-fi
+#log_msg=" Checking file system on $aws_snapshot_device"
+#log_output
+#sudo fsck $aws_snapshot_device
+#if [ ! "$?" == "0" ]; then
+#  log_msg="*** ERROR: Check file system on  $aws_snapshot_device"
+#  log_output
+#  exit
+#fi
 sudo mount $aws_snapshot_device $aws_snapshot_mount_point
 
 #######################################
@@ -182,7 +194,10 @@ ec2_api_version=$(sudo -E $EC2_HOME/bin/ec2-version)
 input=$(sudo -E $EC2_AMITOOL_HOME/bin/ec2-ami-tools-version)
 ec2_ami_version=${input::15}
 log_msg="***
+*** Using Grub version:$(grub --version)
 *** Using virtual_type:$virtual_type
+*** Using kernel parameter:$kernel_parameter
+*** Using partition parameter :$partition
 *** Using block_device:$blockDevice
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
@@ -218,7 +233,7 @@ start=$SECONDS
 #######################################
 log_msg=" Bundleing AMI, this may take several minutes "
 log_output
-log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $aws_pk_path -c $aws_cert_path -u $AWS_ACCOUNT_ID -r x86_64 -e $jenkins_home -d $bundle_dir -p $prefix  $blockDevice --no-filter --batch"
+log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $aws_pk_path -c $aws_cert_path -u $AWS_ACCOUNT_ID -r x86_64 -e $jenkins_home -d $bundle_dir -p $prefix $partition $blockDevice --no-filter --batch"
 $log_msg
 log_output
 sleep 2
@@ -230,18 +245,14 @@ export AWS_MANIFEST=$prefix.manifest.xml
 ## manifest of the bundled AMI
 manifest=$AWS_MANIFEST
 
-## get the kernel image (aki)
-source select_pvgrub_kernel.sh
-
 ## profiling
 end=$SECONDS
 period=$(($end - $start))
 log_msg="***
-*** PARAMETER USED:
-*** Grub version:$(grub --version)
+*** BUNDLE PARAMETER USED:
 *** Bundle folder:$bundle_dir
 *** Block device mapping:$blockDevice
-*** Virtualization:$virtual_type
+*** Partition :$partition
 *** Manifest:$prefix.manifest.xml
 *** Region:$aws_region
 ***
@@ -302,7 +313,7 @@ log_output
 
 #######################################
 ## register a new AMI from the snapshot
-log_msg=$($EC2_HOME/bin/ec2-register -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture --kernel $aws_kernel)
+log_msg=$($EC2_HOME/bin/ec2-register -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture $virtual_type $kernel_parameter)
 log_output
 aws_registerd_ami_id=$(echo $log_msg | cut -d ' ' -f 2)
 log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_registerd_ami_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
@@ -310,6 +321,19 @@ log_output
 log_msg=" Registerd new AMI:$aws_registerd_ami_id"
 log_output
 
+log_msg="***
+*** REGISTER PARAMETER USED:
+*** Region:$aws_region
+*** AMI Name:$aws_ami_name
+*** AMI architecture:$aws_architecture
+*** Snapshot:$aws_snaphost_id
+*** Tag Name:$aws_ami_description
+*** Virtual_type:$virtual_type
+*** Kenrel Parameter:$kernel_parameter
+***
+*** Registerd new AMI:$aws_registerd_ami_id"
+log_output
+sleep 2
 #######################################
 ## tag snapshot
 log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_snapshot_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
