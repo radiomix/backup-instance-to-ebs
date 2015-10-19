@@ -76,6 +76,7 @@ aws_snapshot_description="$project AMI: "$current_instance_id", Snapshot to regi
 ### returning [default-paravirtual|default-hvm]
 meta_data_profile=$(curl -s http://169.254.169.254/latest/meta-data/profile/ | grep "default-")
 profile=${meta_data_profile##default-}
+
 ## on paravirtual AMI we only set the kernel
 ## on hvm we need to setup ec2-tools parameters
 # used in ec2-bundle-vol
@@ -84,7 +85,7 @@ partition=""
 virtual_type=""
 kernel_parameter=""
 
-### for hvm AMI we set partition mbr, virtual type
+### for hvm AMI we set partition mbr and virtualization type
 if  [[ "$profile" == "hvm" ]]; then
   virtual_type="--virtualization-type "$profile" "
   log_msg=" Found virtualization type $profile"
@@ -100,22 +101,8 @@ else # for paravirtial type we set the kernel
   kernel_parameter=" --kernel $aws_kernel "
 fi
 
-#######################################
-### do we need --block-device-mapping for ec2-bundle-volume ?
-### as we are of type paravirtual, we don't need this parameter
-#echo -n "Do you want to bundle with parameter \"--block-device-mapping \"? [y|N]:"
-#read blockDevice
-#if  [[ "$blockDevice" == "y" ]]; then
-#  echo "Root device is set to \"$root_device\". Select root device [xvda|sda] in device mapping:[x|S]"
-#  read blockDevice
-#  if  [[ "$blockDevice" == "x" ]]; then
-#    blockDevice="  --block-device-mapping ami=xvda,root=/dev/xvda1 "
-#  else
-    blockDevice="  --block-device-mapping ami=sda,root=/dev/sda1 "
-#  fi
-#else
-#    blockDevice=""
-#fi
+## both virtual types can take this:
+blockDevice="  --block-device-mapping ami=sda,root=/dev/sda1 "
 
 #######################################
 ## check if mount point exists
@@ -132,7 +119,7 @@ log_msg=" Checking EBS mount point $aws_snapshot_mount_point OK"
 log_output
 
 #######################################
-## attach snapshot Volume
+## attach snapshot Volume $aws_snapshot_volume_id to $aws_snapshot_device
 set +euf
 volume_status=$($EC2_HOME/bin/ec2-attach-volume $aws_snapshot_volume_id --region $aws_region --device $aws_snapshot_device --instance $current_instance_id) 
 echo -n " Waiting until volume $aws_snapshot_volume_id is attached"
@@ -169,15 +156,6 @@ if [[ "$volume_status" == "" ]]; then
   log_output
   exit 52
 fi
-#log_msg=" Checking file system on $aws_snapshot_device"
-#log_output
-#sudo fsck $aws_snapshot_device
-#if [ ! "$?" == "0" ]; then
-#  log_msg="*** ERROR: Check file system on  $aws_snapshot_device"
-#  log_output
-#  exit
-#fi
-#sudo mount $aws_snapshot_device $aws_snapshot_mount_point
 
 #######################################
 log_msg="
@@ -217,18 +195,6 @@ start=$SECONDS
 #start_stop_service
 
 #################################################################################
-#echo -n "Do you want to bundle with these parameters?[y|n]"
-#read input
-#if [[ "$input" != "y" ]]; then
-#  log_msg=" Aborting bundle proccess due to user input. EXIT"
-#  log_output
-#  exit -999
-#else
-#  log_msg=" Starting bundle proccess due to user input. "
-#  log_output
-
-#fi
-#################################################################################
 
 
 #######################################
@@ -265,7 +231,7 @@ sleep 2
 ## extract image name and copy image to EBS volume
 image=${manifest/.manifest.xml/""}
 size=$(du -sb $bundle_dir/$image | cut -f 1)
-log_msg=" Copying $bundle_dir/$image of size $size to $aws_snapshot_device.
+log_msg=" Copying $bundle_dir/$image of size $size to $aws_snapshot_device
 ***  This may take several minutes!"
 log_output
 #sudo dd if=$bundle_dir/$image of=$aws_snapshot_device bs=1M
