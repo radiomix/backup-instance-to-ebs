@@ -11,12 +11,12 @@
 #    THE FOLLOWING IS ASUMED:
 #   - X509-cert-key-file.pem on this machine
 #   - X509-pk-key-file.pem on this machine
-#   - AWS_ACCESS_KEY, AWS_SECRET_KEY and AWS_ACCOUNT_ID is known to the caller
+#   - $aws_access_key_id, $aws_access_secret_key and AWS_ACCOUNT_ID is known to the caller
 #   - AWS API/AMI tools installed under /user/local/ec2 and in $PATH
 #   - JAVA installed
 #   - Package kpart and gdisk are installed
 #   - Package grub is of version <= 0.97
-########## ALL THIS IS DONE BY SCRIPT prepare-aws-tools.sh ###################
+########## ALL THIS IS DONE BY SCRIPT prepare-instance.sh ###################
 #   - we need the instance ID we want to convert $as aws_instance_id
 #   - some commands need sudo rights
 # What we do
@@ -24,7 +24,6 @@
 #   - install gdisk, kpartx to partition
 #   - adjust kernel command line parameters in /boot/grub/menu.lst
 #   - bundle the AMI locally (is there enough space on this machine?)
-#   - exclude jenkins home from bundle
 #   - upload the AMI
 #   - register the AMI
 #   - delete the local bundle
@@ -211,6 +210,8 @@ log_output
 sleep 3
 start=$SECONDS
 
+#TODO check if $bundle_dir has enough space to bundle!
+
 # to STOP $services before bundling uncomment next 2 lines
 #start_stop_command=stop
 #start_stop_service
@@ -339,7 +340,10 @@ sleep 2
 log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_snapshot_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
 log_output
 
-#
+#######################################
+## clean up bundle dir
+sudo rm -rf $bundle_dir/*
+
 # to START $services after bundeling uncomment next 2 lines
 #start_stop_command=start
 #start_stop_service
