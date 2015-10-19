@@ -1,4 +1,11 @@
 
+1.2.3 / 2015-10-19 
+==================
+
+ * split up long commands in lines
+ * delete unused code snipets
+ * update docu, cleanup bundle direcotry
+
 1.2.2 / 2015-10-19 
 ==================
 

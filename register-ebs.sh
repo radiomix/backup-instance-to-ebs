@@ -121,7 +121,8 @@ log_output
 #######################################
 ## attach snapshot Volume $aws_snapshot_volume_id to $aws_snapshot_device
 set +euf
-volume_status=$($EC2_HOME/bin/ec2-attach-volume $aws_snapshot_volume_id --region $aws_region --device $aws_snapshot_device --instance $current_instance_id) 
+volume_status=$($EC2_HOME/bin/ec2-attach-volume $aws_snapshot_volume_id --region $aws_region \
+  --device $aws_snapshot_device --instance $current_instance_id)
 echo -n " Waiting until volume $aws_snapshot_volume_id is attached"
 #######################################
 ## wait until snapshot volume is attached
@@ -200,7 +201,8 @@ start=$SECONDS
 #######################################
 log_msg=" Bundleing AMI to directory $bundle_dir, this may take several minutes "
 log_output
-log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $aws_pk_path -c $aws_cert_path -u $AWS_ACCOUNT_ID -r x86_64 -e $jenkins_home -d $bundle_dir -p $prefix $partition $blockDevice --no-filter --batch"
+log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $aws_pk_path -c $aws_cert_path -u $AWS_ACCOUNT_ID \
+  -r x86_64 -e $jenkins_home -d $bundle_dir -p $prefix $partition $blockDevice --no-filter --batch"
 $log_msg
 log_output
 sleep 2
@@ -260,7 +262,8 @@ sudo umount $aws_snapshot_device
 ## create a snapshot and verify it
 log_msg=" Creating Snapshot from Volume:$aws_snapshot_volume_id. This may take several minutes"
 log_output
-log_msg=$($EC2_HOME/bin/ec2-create-snapshot $aws_snapshot_volume_id --region $aws_region -d "$aws_snapshot_description" -O $aws_access_key_id -W $aws_access_secret_key)
+log_msg=$($EC2_HOME/bin/ec2-create-snapshot $aws_snapshot_volume_id --region $aws_region \
+  -d "$aws_snapshot_description" -O $aws_access_key_id -W $aws_access_secret_key)
 aws_snapshot_id=$(echo $log_msg| cut -d ' ' -f 2)
 log_output
 echo -n "*** Using snapshot:$aws_snapshot_id. Waiting to become ready . "
@@ -280,10 +283,12 @@ log_output
 
 #######################################
 ## register a new AMI from the snapshot
-log_msg=$($EC2_HOME/bin/ec2-register -O $aws_access_key_id -W $aws_access_secret_key --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture $virtual_type $kernel_parameter)
+log_msg=$($EC2_HOME/bin/ec2-register -O $aws_access_key_id -W $aws_access_secret_key --region $aws_region \
+  -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture $virtual_type $kernel_parameter)
 log_output
 aws_registerd_ami_id=$(echo $log_msg | cut -d ' ' -f 2)
-log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_registerd_ami_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
+log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_registerd_ami_id --region $aws_region \
+  --tag Name="$aws_ami_description" --tag Project=$project)
 log_output
 log_msg=" Registerd new AMI:$aws_registerd_ami_id"
 log_output
@@ -303,7 +308,8 @@ log_output
 sleep 2
 #######################################
 ## tag snapshot
-log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_snapshot_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)
+log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_snapshot_id --region $aws_region \
+  --tag Name="$aws_ami_description" --tag Project=$project)
 log_output
 
 #######################################
