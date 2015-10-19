@@ -48,17 +48,15 @@ command_list="curl wget ruby unzip openssl java pv"
 ## services to stop/start while bundeling
 services="jenkins rabbitmq-server redis-server jpdm revealcloud"
 
-## AWS CREDENTIALS needed
-aws_credentials="AWS_ACCESS_KEY AWS_SECRET_KEY AWS_ACCOUNT_ID "
+## AWS CREDENTIALS needed, those are tested
+aws_credentials="aws_access_key_id aws_access_secret_key"
 
-## X509 Cert path
+## X509 file path
 aws_cert_path="/tmp/x509-cert.pem"
-
-## X509 Key path
 aws_pk_path="/tmp/x509-pk.pem"
 
 ## project as prefix
-project="jenkinspoc"
+project="jenkins"
 
 # EC2 install dir
 ec2_prefix="/usr/local/ec2/"

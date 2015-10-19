@@ -59,11 +59,11 @@ aws_ami_name="$project-bundle-instance-$date_fmt"
 # image file prefix
 prefix="bundle-instance-"$date_fmt
 
+# AWS credentials
 # access key from env variable, needed for authentification
-aws_access_key=$AWS_ACCESS_KEY
-
+aws_access_key=$aws_access_key_id
 # secrete key from env variable, needed for authentification
-aws_secret_key=$AWS_SECRET_KEY
+aws_secret_key=$aws_access_secret_key
 
 # descriptions
 aws_snapshot_description="$project AMI: "$current_instance_id", Snapshot to register new EBS AMI"
@@ -117,6 +117,7 @@ fi
 #else
 #    blockDevice=""
 #fi
+
 #######################################
 ## check if mount point exists
 if [[ ! -d $aws_snapshot_mount_point ]]; then
@@ -177,13 +178,13 @@ fi
 #  log_output
 #  exit
 #fi
-sudo mount $aws_snapshot_device $aws_snapshot_mount_point
+#sudo mount $aws_snapshot_device $aws_snapshot_mount_point
 
 #######################################
 log_msg="
 ***
-*** Using AWS_ACCESS_KEY:   \"$aws_access_key\"
-*** Using AWS_ACCOUNT_ID:   \"$aws_account_id\"
+*** Using AWS_ACCESS_KEY:   \"$aws_access_key_id_disguise\"
+*** Using AWS_ACCOUNT_ID:   \"$aws_account_id_disguise\"
 *** Using AWS_REGION:       \"$aws_region\"
 *** Using AWS_ARCHITECTURE: \"$aws_architecture\"
 *** Using x509-cert.pem \"$aws_cert_path\"
@@ -201,7 +202,7 @@ log_msg="***
 *** Using block_device:$blockDevice
 *** Using EC2 API version:$ec2_api_version
 *** Using EC2 AMI TOOL version:$ec2_ami_version
-*** Using :$bundle_dir to bundled this machine
+*** Using directory:$bundle_dir to bundled this machine
 *** Using device:$aws_snapshot_device to copy the unbundled image to
 *** Using mount point:$aws_snapshot_mount_point to mount the unbundled image
 *** Using EBS volume id:$aws_snapshot_volume_id to copy machine to
@@ -210,7 +211,6 @@ log_output
 sleep 3
 start=$SECONDS
 
-#
 # to STOP $services before bundling uncomment next 2 lines
 #start_stop_command=stop
 #start_stop_service
@@ -231,7 +231,7 @@ start=$SECONDS
 
 
 #######################################
-log_msg=" Bundleing AMI, this may take several minutes "
+log_msg=" Bundleing AMI to directory $bundle_dir, this may take several minutes "
 log_output
 log_msg="sudo -E $EC2_AMITOOL_HOME/bin/ec2-bundle-vol -k $aws_pk_path -c $aws_cert_path -u $AWS_ACCOUNT_ID -r x86_64 -e $jenkins_home -d $bundle_dir -p $prefix $partition $blockDevice --no-filter --batch"
 $log_msg
@@ -293,7 +293,7 @@ sudo umount $aws_snapshot_device
 ## create a snapshot and verify it
 log_msg=" Creating Snapshot from Volume:$aws_snapshot_volume_id. This may take several minutes"
 log_output
-log_msg=$($EC2_HOME/bin/ec2-create-snapshot $aws_snapshot_volume_id --region $aws_region -d "$aws_snapshot_description" -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY )
+log_msg=$($EC2_HOME/bin/ec2-create-snapshot $aws_snapshot_volume_id --region $aws_region -d "$aws_snapshot_description" -O $aws_access_key_id -W $aws_access_secret_key)
 aws_snapshot_id=$(echo $log_msg| cut -d ' ' -f 2)
 log_output
 echo -n "*** Using snapshot:$aws_snapshot_id. Waiting to become ready . "
@@ -313,7 +313,7 @@ log_output
 
 #######################################
 ## register a new AMI from the snapshot
-log_msg=$($EC2_HOME/bin/ec2-register -O $AWS_ACCESS_KEY -W $AWS_SECRET_KEY --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture $virtual_type $kernel_parameter)
+log_msg=$($EC2_HOME/bin/ec2-register -O $aws_access_key_id -W $aws_access_secret_key --region $aws_region -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture $virtual_type $kernel_parameter)
 log_output
 aws_registerd_ami_id=$(echo $log_msg | cut -d ' ' -f 2)
 log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_registerd_ami_id --region $aws_region --tag Name="$aws_ami_description" --tag Project=$project)

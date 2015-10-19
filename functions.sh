@@ -29,8 +29,8 @@ if [[ "$found" == "1" ]]; then
     exit -30
 fi
 ## disguise user input
-aws_access_key=${AWS_ACCESS_KEY:0:3}********${AWS_ACCESS_KEY:${#AWS_ACCESS_KEY}-3:3}
-aws_account_id=${AWS_ACCOUNT_ID:0:3}********${AWS_ACCOUNT_ID:${#AWS_ACCOUNT_ID}-3:3}
+aws_access_key_id_disguise=${aws_access_key_id:0:3}********${aws_access_key_id:${#aws_access_key_id}-3:3}
+aws_account_id_disguise=${AWS_ACCOUNT_ID:0:3}********${AWS_ACCOUNT_ID:${#AWS_ACCOUNT_ID}-3:3}
 }
 
 ######################################
