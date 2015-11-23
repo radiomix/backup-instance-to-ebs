@@ -29,7 +29,7 @@ necessary packages (`wget, openssl, java, unzip, pv`), installs packages
 ```
 $./prepare-instance.sh
 ```
-It also genreates X509 files to bundle the new AMI.
+It also generates X509 files to bundle the new AMI.
 
 **User input may be required**.
 
@@ -56,9 +56,9 @@ The scripts relay on these packages to be installed:
 * _openssl_ 
 * pv
 
-**Step 2** also requires two X.509 files,one certificate
+**Step 2** requires two X.509 files,one certificate
 and one private key beeing present at `$aws_cert_path` and `$aws_pk_path`.
-Section [X.509](#x509) describes how to generate both files.
+Both are generated in Step 1.
 
 ###Bundling Parameter
 We use the following parameter for bundling:
