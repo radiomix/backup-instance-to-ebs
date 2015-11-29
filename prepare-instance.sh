@@ -33,7 +33,7 @@ check_commands
 check_aws_credentials
 ## generate x509 files
 set_aws_x509_path
-exit
+
 ######################################
 ## install api/ami tools under /usr/local/ec2
 echo "*** Installing AWS TOOLS"
