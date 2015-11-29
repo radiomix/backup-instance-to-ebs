@@ -43,14 +43,16 @@ start_logging
 ## check config var $command_list or exit
 check_commands
 
+######################################
+## set AWS credentials or exit
+source $(dirname $0)/set_aws_credentials.sh
+check_aws_x509_path
+echo "OK??";sleep 100
+
+
 ## check java/ec2 tools
 check_ec2_tools
 
-######################################
-## aws credentials
-check_aws_credentials
-check_aws_x509_path
-exit
 # ami descriptions and ami name
 aws_ami_description="$project from $current_instance_id at $date_fmt "
 aws_ami_name="$project-bundle-instance-$date_fmt"

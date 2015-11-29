@@ -5,7 +5,7 @@ The [AWS
 docu](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/creating-an-ami-instance-store.html#Using_ConvertingS3toEBS)
 describes how to copy an Instance Stored AMI into an EBS backed AMI.
 As it is a process with several steps, we split the task in two. **Step 1**
-prepares the AMI and **Step 2** performs the bundle task. Assuming a 
+prepares the AMI and **Step 2** performs the bundle task. Assuming a
 snapshot volume stays attached to the instance, **Step 2** can be repeated
 each time the instance was configured newly. All neccessary
 configuration parameters are set in [`config.sh`](config.sh).
@@ -17,33 +17,40 @@ ______
 Attach an EBS volume with a file system to device `$aws_snapshot_device`,
 adjust `$aws_snapshot_volume_id` to reflect the volume id and other parameters
 in `config.sh`. You are ready to convert your instance backed AMI into
-an EBS backed AMI:
+an EBS backed AMI.
 
+### AWS credentials
+We do not put AWS credentials in a file or into calling parameters,
+This would raise security concerns, as credentials would turn up
+plain text in files like `~/.bash_history`. It is therefore **important
+to source the scripts**  to pass environment variables to the calling shell.
+As long as this shell is not closed, credentials are passed to each
+subsequent call!
 
 ###**Step 1** `prepare-instance.sh`
-**This step is only performed once on the machine**. 
+**This step is only performed once on the machine**.
 It installs EC2 API and EC2 Tools, checks vor
 necessary packages (`wget, openssl, java, unzip, pv`), installs packages
 `kpartx, gdisk, grub v0.97` and prepares `/boot/grub/menu.list` and
 `/etc/fstab`.
 ```
-$./prepare-instance.sh
+$source ./prepare-instance.sh
 ```
 It also generates X509 files to bundle the new AMI.
 
 **User input may be required**.
 
 ###**Step 2** `register-ebs.sh`
-**This step could be performed on a regular basis**. 
+**This step could be performed on a regular basis**.
 It bundles the prepared instance and registers it as an EBS backed AMI.
 We rely on the Instance to be prepared as in **Step 1** and check the bundle
-parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI ont 
-an attached snapshot volume and register a snapshot and an EBS backed AMI. 
+parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI ont
+an attached snapshot volume and register a snapshot and an EBS backed AMI.
 
 **No user input should required**.
 
 ```
-$./register-ebs.sh
+source $./register-ebs.sh
 ```
 --------
 
