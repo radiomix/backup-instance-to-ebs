@@ -32,7 +32,8 @@ subsequent call!
 It installs EC2 API and EC2 Tools, checks vor
 necessary packages (`wget, openssl, java, unzip, pv`), installs packages
 `kpartx, gdisk, grub v0.97` and prepares `/boot/grub/menu.list` and
-`/etc/fstab`.
+`/etc/fstab`. The script requires user input to read AWS credentials
+only the first time it is called.
 ```
 $source ./prepare-instance.sh
 ```
@@ -41,7 +42,8 @@ It also generates X509 files to bundle the new AMI.
 **User input may be required**.
 
 ###**Step 2** `register-ebs.sh`
-**This step could be performed on a regular basis**.
+**This step could be performed on a regular basis in the same shell as
+`prepare-instance.sh`**.
 It bundles the prepared instance and registers it as an EBS backed AMI.
 We rely on the Instance to be prepared as in **Step 1** and check the bundle
 parameters by script `register-ebs.sh`. We bundle and unbundle the Instance backed AMI ont
