@@ -32,9 +32,11 @@
 ## config variables
 cwd=$(pwd)
 
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 ## read functions and config
-source $(dirname $0)/functions.sh
-source $(dirname $0)/config.sh
+source $DIR/functions.sh
+source $DIR/config.sh
 set -euf
 set -o pipefail
 
@@ -45,9 +47,8 @@ check_commands
 
 ######################################
 ## set AWS credentials or exit
-source $(dirname $0)/set_aws_credentials.sh
+source $DIR/set_aws_credentials.sh
 check_aws_x509_path
-echo "OK??";sleep 100
 
 
 ## check java/ec2 tools
@@ -99,7 +100,7 @@ if  [[ "$profile" == "hvm" ]]; then
   log_output
 else # for paravirtial type we set the kernel
   ## get the kernel image (aki)
-  source select_pvgrub_kernel.sh
+  source $DIR/select_pvgrub_kernel.sh
   kernel_parameter=" --kernel $aws_kernel "
 fi
 

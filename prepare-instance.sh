@@ -16,11 +16,13 @@
 # Date:   Sept 2015
 #
 #######################################
-## config variables
+## directory path relative
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 
 ## read functions and config
-source $(dirname $0)/functions.sh
-source $(dirname $0)/config.sh
+source $DIR/functions.sh
+source $DIR/config.sh
 set -euf
 set -o pipefail
 
@@ -30,10 +32,10 @@ start_logging
 check_commands
 
 ## set AWS credentials or exit
-source $(dirname $0)/set_aws_credentials.sh
+source $DIR/set_aws_credentials.sh
 ## generate x509 files
 set_aws_x509_path
-echo "OK??";sleep 100
+
 ######################################
 ## install api/ami tools under /usr/local/ec2
 echo "*** Installing AWS TOOLS"
