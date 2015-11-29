@@ -12,36 +12,30 @@
 check_aws_credentials(){
 #declare credentials
 for credential in ${aws_credentials}; do
-found=0
 set +euf
   val=$(env | grep $credential| cut -d '=' -f 2)
 set +euf
   if [[ "$val" == "" ]]; then
-    found=1
-    log_msg=" ERROR Variable $credential not set! EXIT!"
-    log_output
+    set_aws_credential
   else
-    log_msg=" Variable $credential set!"
+    log_msg=" Found Variable $credential set!"
     log_output
   fi
 done
-if [[ "$found" == "1" ]]; then
-    exit -30
-fi
 ## disguise user input
 aws_access_key_id_disguise=${aws_access_key_id:0:3}********${aws_access_key_id:${#aws_access_key_id}-3:3}
 aws_account_id_disguise=${AWS_ACCOUNT_ID:0:3}********${AWS_ACCOUNT_ID:${#AWS_ACCOUNT_ID}-3:3}
 }
 
 ######################################
-## sets config var $aws_credentials
-set_aws_credentials(){
-for credential in ${aws_credentials}; do
+## sets var $credential
+set_aws_credential(){
+  log_msg=" Variable $credential not set! "
+  log_output
   echo -n "Enter your $credential:"
   read val
   eval "export $credential=\"$val\""
   #eval "$credential=\"$val\""
-done
 }
 
 ######################################
