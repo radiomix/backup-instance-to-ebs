@@ -22,7 +22,7 @@ set +euf
   if [[ "$val" == "" ]]; then
     set_aws_credential
   else
-    log_msg=" Found Variable $credential set!"
+    log_msg=" Found Variable $credential !"
     log_output
   fi
 done

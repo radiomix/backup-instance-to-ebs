@@ -29,8 +29,8 @@ start_logging
 ## check config var $command_list or exit
 check_commands
 
-## check AWS credentials or exit
-check_aws_credentials
+## set AWS credentials or exit
+source $(dirname $0)/set_aws_credentials.sh
 ## generate x509 files
 set_aws_x509_path
 
