@@ -174,7 +174,7 @@ start_logging(){
     exit -3
   fi
   # log file
-  base=$(basename $0)
+  base=$(basename $BASH_SOURCE)
   caller=${base::-3}
   log_file=$log_dir$caller"-"$date_fmt.log
   echo "Logging to file $log_file" && sleep 2
