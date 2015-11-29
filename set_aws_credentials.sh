@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Set AWS credentials in this file!
-#   We source this filei in the calling sripts
+#   We source this file in the calling sripts
 #   to exports aws credentials to them:
 #   Calling scripts:
 #        - prepare-instance.sh
