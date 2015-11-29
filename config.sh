@@ -49,7 +49,7 @@ command_list="curl wget ruby unzip openssl java pv"
 services="jenkins rabbitmq-server redis-server jpdm revealcloud"
 
 ## AWS CREDENTIALS needed, those are tested
-aws_credentials="aws_access_key_id aws_access_secret_key"
+aws_credentials="aws_access_key_id aws_access_secret_key aws_account_id"
 
 ## X509 file path
 aws_cert_path="/tmp/x509-cert.pem"
