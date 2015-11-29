@@ -50,7 +50,7 @@ check_ec2_tools
 ## aws credentials
 check_aws_credentials
 check_aws_x509_path
-
+exit
 # ami descriptions and ami name
 aws_ami_description="$project from $current_instance_id at $date_fmt "
 aws_ami_name="$project-bundle-instance-$date_fmt"
