@@ -29,6 +29,11 @@ start_logging
 ## check config var $command_list or exit
 check_commands
 
+## check AWS credentials or exit
+check_aws_credentials
+## generate x509 files
+set_aws_x509_path
+
 ######################################
 ## install api/ami tools under /usr/local/ec2
 echo "*** Installing AWS TOOLS"
@@ -126,8 +131,6 @@ else
   log_output
 fi
 
-check_aws_credentials
-set_aws_x509_path
 
 #######################################
 log_msg="
