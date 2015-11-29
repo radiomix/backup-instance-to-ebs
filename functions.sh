@@ -11,6 +11,8 @@
 ## checks config var $aws_credentials
 check_aws_credentials(){
 #declare credentials
+log_msg=" Checking AWS Credentials: $aws_credentials"
+log_output
 for credential in ${aws_credentials}; do
 set +euf
   val=$(env | grep $credential| cut -d '=' -f 2)
