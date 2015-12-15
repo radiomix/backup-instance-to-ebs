@@ -125,19 +125,19 @@ log_output
 ## attach snapshot Volume $aws_snapshot_volume_id to $aws_snapshot_device
 set +euf
 volume_status=$($EC2_HOME/bin/ec2-attach-volume $aws_snapshot_volume_id --region $aws_region \
-  --device $aws_snapshot_device --instance $current_instance_id)
+  --device $aws_snapshot_device --instance $current_instance_id -O $aws_access_key_id -W aws_access_secret_key_id)
 echo -n " Waiting until volume $aws_snapshot_volume_id is attached"
 #######################################
 ## wait until snapshot volume is attached
 completed=""
 while [[ "$completed" == "" ]]
 do
-    completed=$($EC2_HOME/bin/ec2-describe-volumes $aws_snapshot_volume_id --region $aws_region | grep attached)
+    completed=$($EC2_HOME/bin/ec2-describe-volumes $aws_snapshot_volume_id --region $aws_region  -O $aws_access_key_id -W aws_access_secret_key_id | grep attached)
     echo -n ". "
     sleep 3
 done
 echo ""
-log_msg=$($EC2_HOME/bin/ec2-describe-volumes $aws_snapshot_volume_id --region $aws_region | grep attached)
+log_msg=$($EC2_HOME/bin/ec2-describe-volumes $aws_snapshot_volume_id --region $aws_region  -O $aws_access_key_id -W aws_access_secret_key_id | grep attached)
 log_output
 ebs_name=$(echo $aws_snapshot_device | cut -d '/' -f 3)
 input=$(lsblk | grep $ebs_name)
@@ -152,7 +152,7 @@ log_output
 
 #######################################
 ## check snapshot volume and file system
-volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_snapshot_volume_id | grep attached)
+volume_status=$($EC2_HOME/bin/ec2-describe-volumes --region $aws_region $aws_snapshot_volume_id  -O $aws_access_key_id -W aws_access_secret_key_id | grep attached)
 log_msg=$volume_status
 log_output
 if [[ "$volume_status" == "" ]]; then
@@ -276,22 +276,22 @@ echo -n "*** Using snapshot:$aws_snapshot_id. Waiting to become ready . "
 completed=""
 while [[ "$completed" == "" ]]
 do
-    completed=$($EC2_HOME/bin/ec2-describe-snapshots $aws_snapshot_id --region $aws_region | grep completed)
+    completed=$($EC2_HOME/bin/ec2-describe-snapshots $aws_snapshot_id --region $aws_region  -O $aws_access_key_id -W aws_access_secret_key_id | grep completed)
     echo -n ". "
     sleep 3
 done
 echo ""
-log_msg=$($EC2_HOME/bin/ec2-describe-snapshots $aws_snapshot_id --region $aws_region | grep completed)
+log_msg=$($EC2_HOME/bin/ec2-describe-snapshots $aws_snapshot_id --region $aws_region  -O $aws_access_key_id -W aws_access_secret_key_id | grep completed)
 log_output
 
 #######################################
 ## register a new AMI from the snapshot
 log_msg=$($EC2_HOME/bin/ec2-register -O $aws_access_key_id -W $aws_access_secret_key --region $aws_region \
-  -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture $virtual_type $kernel_parameter)
+  -n "$aws_ami_name" -s $aws_snapshot_id -a $aws_architecture $virtual_type $kernel_parameter  -O $aws_access_key_id -W aws_access_secret_key_id)
 log_output
 aws_registerd_ami_id=$(echo $log_msg | cut -d ' ' -f 2)
 log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_registerd_ami_id --region $aws_region \
-  --tag Name="$aws_ami_description" --tag Project=$project)
+  --tag Name="$aws_ami_description" --tag Project=$project  -O $aws_access_key_id -W aws_access_secret_key_id)
 log_output
 log_msg=" Registerd new AMI:$aws_registerd_ami_id"
 log_output
@@ -312,7 +312,7 @@ sleep 2
 #######################################
 ## tag snapshot
 log_msg=$($EC2_HOME/bin/ec2-create-tags $aws_snapshot_id --region $aws_region \
-  --tag Name="$aws_ami_description" --tag Project=$project)
+  --tag Name="$aws_ami_description" --tag Project=$project  -O $aws_access_key_id -W aws_access_secret_key_id)
 log_output
 
 #######################################
