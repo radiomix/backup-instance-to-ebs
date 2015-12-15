@@ -27,7 +27,7 @@ set +euf
   fi
 done
 ## disguise user input
-aws_access_secret_key_disguise=${aws_access_secret_key_id:0:3}********${aws_access_secret_key_id:${#aws_access_secret_key_id}-3:3}
+aws_access_secret_key_disguise=${aws_access_secret_key:0:3}********${aws_access_secret_key:${#aws_access_secret_key}-3:3}
 aws_access_key_id_disguise=${aws_access_key_id:0:3}********${aws_access_key_id:${#aws_access_key_id}-3:3}
 aws_account_id_disguise=${AWS_ACCOUNT_ID:0:3}********${AWS_ACCOUNT_ID:${#AWS_ACCOUNT_ID}-3:3}
 }
