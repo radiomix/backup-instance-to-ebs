@@ -6,3 +6,4 @@ export AWS_SECRET_KEY=
 export AWS_ACCOUNT_ID=
 export aws_access_key_id=
 export aws_access_secret_key=
+export aws_account_id=
