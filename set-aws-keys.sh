@@ -1,3 +1,4 @@
+#!/bin/bash
 echo " Usage: source set-aws-keys.sh "
 echo "Sets $(whoami) AWS credentials in Account DEV"
 export export AWS_ACCOUNT=
